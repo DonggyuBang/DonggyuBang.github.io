@@ -1,0 +1,4 @@
+document.addEventListener("DOMContentLoaded",async()=>{
+  const members=await BERL.json("data/members.json"),groups=[...new Set(members.map(m=>m.group))];
+  document.getElementById("people-groups").innerHTML=groups.map(g=>`<section style="padding:0 0 58px"><div class="section-head"><div><div class="kicker">BERL People</div><h2>${BERL.esc(g)}</h2></div></div><div class="grid-3">${members.filter(m=>m.group===g).map(m=>`<a class="card person-card" href="member.html?id=${encodeURIComponent(m.id)}"><div class="portrait"><img src="${BERL.esc(m.photo||"assets/images/default-avatar.svg")}" alt="${BERL.esc(m.name)}" onerror="BERL.photo(this)"></div><h3>${BERL.esc(m.name)}</h3><div class="role">${BERL.esc(m.position)}</div><p>${BERL.esc((m.research_interests||[]).slice(0,3).join(" · "))}</p></a>`).join("")}</div></section>`).join("");
+});

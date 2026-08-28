@@ -1,0 +1,10 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Ongoing and completed BERL research projects, funding programs, and collaborative initiatives.">
+<meta name="theme-color" content="#061a29">
+<link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/style.css">
+<title>Projects | BERL</title>
+</head><body data-page="projects"><div id="site-header"></div><main>
+<section class="page-hero"><div class="container"><div class="kicker">BERL · Hanyang University</div><h1>Projects</h1><p>Ongoing and completed BERL research projects, funding programs, and collaborative initiatives.</p></div></section>
+<section><div class="container"><div class="grid-2" id="project-list"></div></div></section><script>document.addEventListener("DOMContentLoaded",()=>renderCards("data/projects.json","project-list",p=>`<article class="card"><span class="pill">${BERL.esc(p.status)}</span><h3>${BERL.esc(p.title)}</h3><p>${BERL.esc(p.period)} · ${BERL.esc(p.funder)}</p><div class="detail-list"><div class="detail-row"><strong>PI</strong><span>${BERL.esc(p.pi)}</span></div><div class="detail-row"><strong>Area</strong><span>${BERL.esc(p.area)}</span></div></div></article>`));</script></main><div id="site-footer"></div><script src="assets/js/site.js"></script><script src="assets/js/data-pages.js"></script></body></html>

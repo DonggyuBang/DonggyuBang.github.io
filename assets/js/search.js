@@ -1,0 +1,7 @@
+document.addEventListener("DOMContentLoaded",async()=>{
+  const [pubs,members,research,news]=await Promise.all([BERL.json("data/publications.json"),BERL.json("data/members.json"),BERL.json("data/research.json"),BERL.json("data/news.json")]);
+  const items=[...pubs.map(x=>({type:"Publication",title:x.title,desc:[...(x.authors||[]),x.journal||""].join(" · "),url:x.doi?`https://doi.org/${x.doi}`:"publications.html"})),...members.map(x=>({type:"People",title:x.name,desc:[x.position,...(x.research_interests||[])].join(" · "),url:`member.html?id=${encodeURIComponent(x.id)}`})),...research.map(x=>({type:"Research",title:x.title,desc:x.summary,url:`research.html#${x.slug}`})),...news.map(x=>({type:"News",title:x.title,desc:x.summary,url:x.url||"news.html"}))];
+  const input=document.getElementById("site-search");const qp=new URLSearchParams(location.search).get("q");if(qp)input.value=qp;
+  function render(){const q=input.value.trim().toLowerCase(),out=q?items.filter(x=>`${x.type} ${x.title} ${x.desc}`.toLowerCase().includes(q)).slice(0,100):[];document.getElementById("search-results").innerHTML=q?(out.length?out.map(x=>`<div class="search-result"><div class="type">${BERL.esc(x.type)}</div><h3><a href="${BERL.esc(x.url)}">${BERL.esc(x.title)}</a></h3><div class="small muted">${BERL.esc(x.desc)}</div></div>`).join(""):`<div class="empty">No results found.</div>`):`<div class="empty">Search a research topic, member, publication title, journal, or news item.</div>`}
+  input.addEventListener("input",render);render();
+});

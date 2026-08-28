@@ -1,0 +1,25 @@
+[
+  {
+    "id": "byung-hun-jeon",
+    "name": "Byung-Hun Jeon",
+    "position": "Professor / Principal Investigator",
+    "group": "Professor",
+    "affiliation": "Hanyang University",
+    "department": "Department of Earth Resources and Environmental Engineering",
+    "email": "",
+    "photo": "assets/images/byung-hun-jeon.jpg",
+    "research_interests": [
+      "Environmental Biotechnology",
+      "Bioenergy & Resource Recovery",
+      "Environmental Remediation",
+      "Sustainable Environmental Systems"
+    ],
+    "bio": "Principal Investigator of BERL. Replace or expand this text with the official biography when ready.",
+    "education": [],
+    "scholar_url": "https://scholar.google.co.kr/citations?user=iLAWDREAAAAJ&hl=en",
+    "orcid_url": "https://orcid.org/0000-0002-5478-765X",
+    "researchgate_url": "",
+    "openalex_id": "A5007157661",
+    "featured": true
+  }
+]

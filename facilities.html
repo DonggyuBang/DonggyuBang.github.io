@@ -1,0 +1,10 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="BERL experimental systems, analytical instrumentation, and research infrastructure.">
+<meta name="theme-color" content="#061a29">
+<link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/style.css">
+<title>Facilities | BERL</title>
+</head><body data-page="facilities"><div id="site-header"></div><main>
+<section class="page-hero"><div class="container"><div class="kicker">BERL · Hanyang University</div><h1>Facilities</h1><p>BERL experimental systems, analytical instrumentation, and research infrastructure.</p></div></section>
+<section><div class="container"><div class="grid-3" id="facility-list"></div></div></section><script>document.addEventListener("DOMContentLoaded",()=>renderCards("data/facilities.json","facility-list",x=>`<article class="card"><div class="card-code">EQ</div><span class="pill">${BERL.esc(x.category)}</span><h3>${BERL.esc(x.name)}</h3><p>${BERL.esc(x.description)}</p></article>`));</script></main><div id="site-footer"></div><script src="assets/js/site.js"></script><script src="assets/js/data-pages.js"></script></body></html>
