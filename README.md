@@ -1,31 +1,34 @@
-# BERL Website v3
+# BERL Website v5 — Complete Unified Design
 
-A zero-build, data-driven, multi-page research laboratory website for GitHub Pages.
+This package is the unified BERL website build.
 
-## Main features
+## Included
+- Environmental-engineering blue visual system across every page
+- 4-second environmental hero slider
+- Latest 5 News items linked to `data/news.json`
+- 4-second Research carousel with research-specific graphics
+- Dropdown navigation
+- About / Research / People / Member / Publications / Research Programs / News / Join / Contact / Search / 404 unified
+- Facilities removed
+- OpenAlex publication synchronization retained
+- Formspree contact integration retained
+- GitHub Pages / GitHub Actions deployment retained
 
-- Modern environmental-engineering visual system
-- Responsive multi-page layout
-- Light / dark theme
-- People profiles with image fallback
-- OpenAlex publication synchronization
-- Citation / h-index / i10-index / OA metrics
-- Publication search and filters
-- Integrated site search
-- Formspree contact form
-- Projects / facilities / news / join pages
-- GitHub Actions Pages deployment
-- Custom domain configuration
-- Mac hidden-folder workaround for `.github`
+## Primary editable data
+- `data/site.json`
+- `data/members.json`
+- `data/research.json`
+- `data/projects.json`
+- `data/news.json`
+- `data/manual-publications.json`
+- `data/scholar-config.json`
 
-Start with:
+## News behavior
+The homepage right panel always shows the newest five items from `data/news.json`, sorted by `date`.
 
-`00_SETUP_KO.md`
+## Images
+Research and News currently use lightweight SVG graphics included in `assets/images/`.
+Replace an `image` field in JSON with a real photo path later if desired.
 
-The real workflow lives at:
-
-`.github/workflows/deploy-pages.yml`
-
-A visible backup is also provided at:
-
-`workflow-backup/deploy-pages.yml`
+## Deployment
+`.github/workflows/deploy-pages.yml` deploys the site and refreshes OpenAlex publication data.

@@ -1,9 +1,47 @@
 [
   {
     "date": "2026-08-28",
-    "category": "Website",
-    "title": "BERL launches a new research website",
-    "summary": "The new BERL website provides integrated access to research themes, people, publications, projects, and laboratory information.",
-    "url": "news.html"
+    "category": "Lab Update",
+    "title": "BERL launches its new research website",
+    "summary": "The redesigned BERL website integrates research themes, people, publications, research programs, news, and contact information into a single data-driven platform.",
+    "url": "news.html",
+    "image": "assets/images/news-website.svg",
+    "featured": true
+  },
+  {
+    "date": "2026-08-25",
+    "category": "Research Spotlight",
+    "title": "Hydrothermal pretreatment for emerging polymer waste streams",
+    "summary": "BERL is exploring hydrothermal solubilization and pretreatment strategies to understand how polymer transformation can be linked with downstream biological conversion and resource recovery.",
+    "url": "research.html#circular-materials",
+    "image": "assets/images/news-hydrothermal.svg",
+    "featured": true
+  },
+  {
+    "date": "2026-08-20",
+    "category": "Research Spotlight",
+    "title": "Data-driven modeling for anaerobic digestion systems",
+    "summary": "A current BERL research direction combines full-scale anaerobic digestion data with machine-learning methods to improve process interpretation, prediction, and operational decision support.",
+    "url": "research.html#ai-environment",
+    "image": "assets/images/news-ai.svg",
+    "featured": true
+  },
+  {
+    "date": "2026-08-12",
+    "category": "Research Spotlight",
+    "title": "Microbial biodegradation and enzyme profiling of polyester materials",
+    "summary": "BERL is investigating microbial growth, extracellular enzyme activity, and polymer transformation to better understand biological degradation pathways for polyester-based materials.",
+    "url": "research.html#microbial-systems",
+    "image": "assets/images/news-microbe.svg",
+    "featured": true
+  },
+  {
+    "date": "2026-07-31",
+    "category": "Research Spotlight",
+    "title": "Mineral-assisted control of organic matter transformation and nitrogen dynamics",
+    "summary": "BERL studies how mineral phases and chemical conditions influence organic matter transformation, nitrogen partitioning, microbial succession, and stabilization processes.",
+    "url": "research.html#organic-matter",
+    "image": "assets/images/news-mineral.svg",
+    "featured": true
   }
 ]
