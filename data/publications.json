@@ -1,0 +1,41 @@
+[
+  {
+    "id": "sample-2026-1",
+    "year": 2026,
+    "title": "Sample publication — replace automatically or manually",
+    "authors": [
+      "Author 1",
+      "Author 2",
+      "Byung-Hun Jeon"
+    ],
+    "journal": "Journal Name",
+    "doi": "",
+    "url": "",
+    "open_access": false,
+    "cited_by_count": 0,
+    "type": "article",
+    "source": "manual",
+    "topics": [
+      "Environmental Engineering"
+    ]
+  },
+  {
+    "id": "sample-2025-1",
+    "year": 2025,
+    "title": "Sample publication — edit data/publications.json or configure OpenAlex automation",
+    "authors": [
+      "Author 1",
+      "Byung-Hun Jeon"
+    ],
+    "journal": "Journal Name",
+    "doi": "",
+    "url": "",
+    "open_access": false,
+    "cited_by_count": 0,
+    "type": "article",
+    "source": "manual",
+    "topics": [
+      "Bioenergy"
+    ]
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "contact_email_for_openalex": "replace@example.com",
+  "authors": [
+    {
+      "name": "Byung-Hun Jeon",
+      "openalex_id": "",
+      "orcid": "",
+      "google_scholar_url": ""
+    }
+  ],
+  "notes": "Fill openalex_id values such as A1234567890. Google Scholar is linked for users but is not scraped."
+}

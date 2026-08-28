@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta name="description" content="Search and browse BERL research publications. The list can be updated automatically from OpenAlex through GitHub Actions.">
+  <title>Publications | BERL</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="publications">
+<div id="site-header"></div>
+<main>
+  <section class="page-hero">
+    <div class="container"><div class="kicker">BERL · Hanyang University</div><h1>Publications</h1><p>Search and browse BERL research publications. The list can be updated automatically from OpenAlex through GitHub Actions.</p></div>
+  </section>
+  
+<section><div class="container">
+  <div class="toolbar">
+    <input class="input" id="pub-search" placeholder="Search title, author, journal, DOI, topic…">
+    <select class="select" id="pub-year"><option value="">All years</option></select>
+    <select class="select" id="pub-type"><option value="">All types</option></select>
+  </div>
+  <div class="small muted" id="pub-count" style="margin-bottom:10px"></div>
+  <div id="pub-list"></div>
+</div></section>
+
+</main>
+<div id="site-footer"></div>
+<script src="assets/js/site.js"></script>
+<script src="assets/js/publications.js"></script>
+</body>
+</html>

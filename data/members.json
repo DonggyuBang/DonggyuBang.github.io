@@ -1,0 +1,68 @@
+[
+  {
+    "id": "byung-hun-jeon",
+    "name": "Byung-Hun Jeon",
+    "position": "Professor / Principal Investigator",
+    "group": "Professor",
+    "affiliation": "Hanyang University",
+    "department": "Department of Earth Resources and Environmental Engineering",
+    "email": "",
+    "photo": "",
+    "research_interests": [
+      "Environmental biotechnology",
+      "Bioenergy and resource recovery",
+      "Waste treatment",
+      "Microbial and physicochemical environmental processes"
+    ],
+    "bio": "Principal Investigator of BERL. Replace or expand this biography with the official profile.",
+    "education": [],
+    "scholar_url": "",
+    "orcid_url": "",
+    "researchgate_url": "",
+    "openalex_id": "",
+    "featured": true
+  },
+  {
+    "id": "member-01",
+    "name": "Member Name",
+    "position": "Ph.D. Student",
+    "group": "Ph.D. Students",
+    "affiliation": "Hanyang University",
+    "department": "BERL",
+    "email": "",
+    "photo": "",
+    "research_interests": [
+      "Anaerobic digestion",
+      "Waste treatment",
+      "Bioenergy"
+    ],
+    "bio": "Replace this sample member with an actual BERL member.",
+    "education": [],
+    "scholar_url": "",
+    "orcid_url": "",
+    "researchgate_url": "",
+    "openalex_id": "",
+    "featured": false
+  },
+  {
+    "id": "member-02",
+    "name": "Member Name",
+    "position": "M.S. Student",
+    "group": "M.S. Students",
+    "affiliation": "Hanyang University",
+    "department": "BERL",
+    "email": "",
+    "photo": "",
+    "research_interests": [
+      "Environmental microbiology",
+      "Resource recovery"
+    ],
+    "bio": "Replace this sample member with an actual BERL member.",
+    "education": [],
+    "scholar_url": "",
+    "orcid_url": "",
+    "researchgate_url": "",
+    "openalex_id": "",
+    "featured": false
+  }
+]
