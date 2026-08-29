@@ -32,3 +32,6 @@ Replace an `image` field in JSON with a real photo path later if desired.
 
 ## Deployment
 `.github/workflows/deploy-pages.yml` deploys the site and refreshes OpenAlex publication data.
+
+## Restore note
+The BERL website was restored to the pre-United redesign version on 2026-08-29.
