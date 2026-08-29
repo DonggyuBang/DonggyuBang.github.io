@@ -9,12 +9,12 @@ DATA=ROOT/"data"
 CONFIG=json.loads((DATA/"scholar-config.json").read_text(encoding="utf-8"))
 API_KEY=os.getenv("OPENALEX_API_KEY","").strip()
 
-def request_json(url, params=None, retries=4):
+def request_json(url, params=None, retries=6):
     params=dict(params or {})
     if API_KEY:
         params["api_key"]=API_KEY
     full=url+("?" + urllib.parse.urlencode(params) if params else "")
-    headers={"User-Agent":"BERL-publication-sync/3.1"}
+    headers={"User-Agent":"BERL-publication-sync/3.2"}
     for attempt in range(retries):
         try:
             with urllib.request.urlopen(urllib.request.Request(full,headers=headers), timeout=60) as r:
@@ -23,12 +23,18 @@ def request_json(url, params=None, retries=4):
             body=e.read().decode("utf-8","ignore")[:500]
             if e.code in (401,403):
                 raise RuntimeError("OpenAlex authentication failed. Add a free API key as repository secret OPENALEX_API_KEY. "+body)
-            if e.code==429 and attempt<retries-1:
-                time.sleep(2**attempt);continue
+            if e.code in (429,500,502,503,504) and attempt<retries-1:
+                wait=min(2**attempt,16)
+                print(f"OpenAlex HTTP {e.code}; retrying in {wait}s ({attempt+1}/{retries})")
+                time.sleep(wait)
+                continue
             raise RuntimeError(f"OpenAlex HTTP {e.code}: {body}")
-        except Exception:
+        except Exception as e:
             if attempt<retries-1:
-                time.sleep(2**attempt);continue
+                wait=min(2**attempt,16)
+                print(f"OpenAlex request error {type(e).__name__}; retrying in {wait}s ({attempt+1}/{retries})")
+                time.sleep(wait)
+                continue
             raise
 
 def author_id(v):
@@ -72,13 +78,13 @@ def fetch_works(aid):
     while cursor:
         payload=request_json("https://api.openalex.org/works",{
             "filter":f"author.id:{aid}",
-            "per_page":100,
+            "per_page":50,
             "cursor":cursor
         })
         out.extend(convert_work(w) for w in payload.get("results",[]))
         cursor=(payload.get("meta") or {}).get("next_cursor")
         if not cursor: break
-        time.sleep(.12)
+        time.sleep(.18)
     return out
 
 def pkey(p):
