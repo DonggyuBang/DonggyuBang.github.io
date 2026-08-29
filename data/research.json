@@ -1,0 +1,93 @@
+[
+  {
+    "slug": "bioenergy-resource-recovery",
+    "title": "Bioenergy & Resource Recovery",
+    "code": "01",
+    "tag": "Waste-to-Resource",
+    "summary": "Biological and physicochemical conversion of waste streams into renewable energy and recoverable resources.",
+    "topics": [
+      "Anaerobic digestion",
+      "Co-digestion",
+      "Biogas",
+      "Pretreatment",
+      "Waste valorization"
+    ],
+    "photo_index": 1,
+    "image": "assets/images/generated/research-bioenergy.png"
+  },
+  {
+    "slug": "environmental-remediation",
+    "title": "Environmental Remediation",
+    "code": "02",
+    "tag": "Remediation",
+    "summary": "Advanced environmental treatment strategies for contaminants, waste-derived materials, and complex environmental matrices.",
+    "topics": [
+      "Water treatment",
+      "Adsorption",
+      "Contaminant transformation",
+      "Environmental materials"
+    ],
+    "photo_index": 2,
+    "image": "assets/images/generated/research-remediation.png"
+  },
+  {
+    "slug": "microbial-systems",
+    "title": "Microbial Systems Engineering",
+    "code": "03",
+    "tag": "Biotechnology",
+    "summary": "Microbial ecology, functional microorganisms, enzymes, and community-level responses in engineered environmental systems.",
+    "topics": [
+      "Microbial ecology",
+      "Functional genes",
+      "Enzyme activity",
+      "Biodegradation"
+    ],
+    "photo_index": 3,
+    "image": "assets/images/generated/research-microbial.png"
+  },
+  {
+    "slug": "circular-materials",
+    "title": "Circular & Emerging Materials",
+    "code": "04",
+    "tag": "Circularity",
+    "summary": "Transformation, biodegradation, solubilization, and environmental fate of emerging and circular materials.",
+    "topics": [
+      "Biodegradable plastics",
+      "PLA / PBAT",
+      "Polymer transformation",
+      "Circular materials"
+    ],
+    "photo_index": 4,
+    "image": "assets/images/generated/research-circular.jpg"
+  },
+  {
+    "slug": "organic-matter",
+    "title": "Organic Matter Transformation",
+    "code": "05",
+    "tag": "Biogeochemistry",
+    "summary": "Chemical and microbial transformation of organic matter during decomposition, stabilization, and mineral interaction.",
+    "topics": [
+      "Dissolved organic matter",
+      "Composting",
+      "Nitrogen dynamics",
+      "Mineral association"
+    ],
+    "photo_index": 5,
+    "image": "assets/images/generated/research-organic.jpg"
+  },
+  {
+    "slug": "ai-environment",
+    "title": "Data-Driven Environmental Engineering",
+    "code": "06",
+    "tag": "AI & Modeling",
+    "summary": "Machine learning and data analytics for prediction, monitoring, optimization, and environmental decision support.",
+    "topics": [
+      "Machine learning",
+      "Process prediction",
+      "Optimization",
+      "Environmental data"
+    ],
+    "photo_index": 6,
+    "image": "assets/images/generated/research-ai.png"
+  }
+]

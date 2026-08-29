@@ -1,0 +1,8 @@
+Place real photos in this folder.
+
+Professor photo expected by default:
+  assets/images/byung-hun-jeon.jpg
+
+IMPORTANT
+- The filename must match exactly, including upper/lower case and extension.
+- If the file is missing, the website automatically shows default-avatar.svg instead of a broken image.

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 900">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#dbe8ec"/><stop offset="1" stop-color="#c4d9dc"/></linearGradient></defs>
+<rect width="800" height="900" fill="url(#bg)"/>
+<circle cx="400" cy="330" r="145" fill="#90a9af"/>
+<path d="M135 900c22-214 126-326 265-326s243 112 265 326H135z" fill="#90a9af"/>
+<text x="400" y="820" text-anchor="middle" font-family="Arial,sans-serif" font-size="34" fill="#536c73">BERL MEMBER</text>
+</svg>
