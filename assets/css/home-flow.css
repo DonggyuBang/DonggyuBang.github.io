@@ -1,0 +1,36 @@
+body[data-page="home"] .motion-marquee{display:none!important}
+body[data-page="home"] .award-home{position:relative;isolation:isolate;overflow:hidden}
+body[data-page="home"] .award-home:after{content:"";position:absolute;z-index:2;left:0;right:0;bottom:-1px;height:180px;background:linear-gradient(180deg,rgba(5,19,34,0),rgba(5,19,34,.46) 58%,#061a2c 100%);pointer-events:none}
+body[data-page="home"] .hero-slide{will-change:transform;transform:translate3d(0,var(--hero-y,0px),0) scale(1.085)!important;transition:opacity .9s ease,transform .15s linear!important}
+body[data-page="home"] .hero-grid{z-index:4}
+body[data-page="home"] .hero-slide-nav{z-index:5}
+body[data-page="home"] .scroll-scene{--scene-bg-y:0px;--scene-copy-y:0px;--scene-art-y:0px;--scene-scale:1;position:relative;isolation:isolate;min-height:145vh;padding:0!important;overflow:clip;background:#061a2c;color:#fff}
+body[data-page="home"] .scroll-scene:before{content:"";position:absolute;z-index:-2;inset:-14% -5%;background:linear-gradient(90deg,rgba(4,18,33,.94) 0%,rgba(5,27,48,.78) 45%,rgba(4,17,31,.88) 100%),url('../images/generated/hero-clean-tech.png') center/cover no-repeat;transform:translate3d(0,var(--scene-bg-y),0) scale(1.12);will-change:transform}
+body[data-page="home"] .scroll-scene:after{content:"";position:absolute;z-index:-1;inset:0;background:radial-gradient(circle at 72% 48%,rgba(18,151,224,.18),transparent 34%),radial-gradient(circle at 66% 50%,rgba(58,223,218,.1),transparent 46%),linear-gradient(180deg,#061a2c 0%,rgba(6,26,44,.72) 36%,rgba(6,26,44,.82) 76%,#061a2c 100%);pointer-events:none}
+body[data-page="home"] .scroll-scene-grid{position:sticky;top:70px;min-height:calc(100vh - 70px);padding:64px 0;display:grid;grid-template-columns:.82fr 1.18fr;gap:34px;align-items:center}
+body[data-page="home"] .research-statement{position:relative;z-index:3;transform:translate3d(0,var(--scene-copy-y),0);will-change:transform}
+body[data-page="home"] .research-statement .kicker{color:#55dfe7}
+body[data-page="home"] .research-statement .lab-slogan{color:#fff;text-wrap:balance;text-shadow:0 12px 44px rgba(0,0,0,.18)}
+body[data-page="home"] .scroll-scene .research-lead{color:#79e8ee!important;font-size:18px!important;font-weight:650!important;line-height:1.7!important;max-width:680px!important}
+body[data-page="home"] .research-statement .btn-light{background:rgba(255,255,255,.06)!important;color:#fff!important;border-color:rgba(255,255,255,.25)!important}
+body[data-page="home"] .research-network-art{position:relative;z-index:3;display:grid;place-items:center;min-height:720px;transform:translate3d(0,var(--scene-art-y),0) scale(var(--scene-scale));transform-origin:center;will-change:transform}
+body[data-page="home"] .berl-network-svg{display:block;width:min(100%,840px);height:auto;overflow:visible;filter:drop-shadow(0 34px 60px rgba(0,0,0,.28))}
+body[data-page="home"] .berl-network-svg .net-orbit{fill:none;stroke:#1679b8;stroke-width:1;opacity:.35;transform-origin:450px 380px;animation:berlOrbit 42s linear infinite}
+body[data-page="home"] .berl-network-svg .net-orbit.dashed{stroke-dasharray:4 11;opacity:.5;animation-duration:30s;animation-direction:reverse}
+body[data-page="home"] .berl-network-svg .net-link{stroke:url(#linkGlow);stroke-width:4;fill:none;filter:url(#glow);opacity:.92}
+body[data-page="home"] .berl-network-svg .net-core-ring{fill:url(#coreGrad);stroke:#4bdcf1;stroke-width:2;filter:url(#strongGlow)}
+body[data-page="home"] .berl-network-svg .net-node-ring{fill:none;stroke:#4bdcf1;stroke-width:3;filter:url(#glow)}
+body[data-page="home"] .berl-network-svg .node-green{stroke:#a5d92e}.berl-network-svg .node-purple{stroke:#9d82ff}.berl-network-svg .node-cyan{stroke:#24c9ff}.berl-network-svg .node-teal{stroke:#27d8b0}
+body[data-page="home"] .berl-network-svg .pulse{transform-box:fill-box;transform-origin:center;animation:berlPulse 3.8s ease-in-out infinite}
+body[data-page="home"] .berl-network-svg .node-label{fill:#f7fbff;font-size:17px;font-weight:800;letter-spacing:.02em}
+body[data-page="home"] .berl-network-svg .node-sub{fill:#7feaf0;font-size:10px;font-weight:700;letter-spacing:.11em;text-transform:uppercase}
+body[data-page="home"] .berl-network-svg .core-title{fill:#fff;font-size:58px;font-weight:900;letter-spacing:-.055em}
+body[data-page="home"] .berl-network-svg .core-sub{fill:#ccebf4;font-size:16px;font-weight:650}
+body[data-page="home"] .berl-network-svg .node-image{transition:transform .35s ease,filter .35s ease;transform-box:fill-box;transform-origin:center}
+body[data-page="home"] .berl-network-svg a:hover .node-image{transform:scale(1.045);filter:saturate(1.12) brightness(1.06)}
+body[data-page="home"] .berl-network-svg a:hover .net-node-ring{stroke-width:5}
+@keyframes berlOrbit{to{transform:rotate(360deg)}}
+@keyframes berlPulse{0%,100%{opacity:.72;transform:scale(.97)}50%{opacity:1;transform:scale(1.035)}}
+@media(max-width:1100px){body[data-page="home"] .scroll-scene-grid{grid-template-columns:1fr;gap:12px;padding:76px 0 48px}body[data-page="home"] .research-statement{max-width:820px}body[data-page="home"] .research-network-art{min-height:650px}body[data-page="home"] .berl-network-svg{width:min(100%,760px)}}
+@media(max-width:720px){body[data-page="home"] .scroll-scene{min-height:auto;padding:72px 0!important}body[data-page="home"] .scroll-scene:before{inset:-5%;transform:none;background-position:58% center}body[data-page="home"] .scroll-scene-grid{position:relative;top:auto;min-height:0;padding:0;display:block}body[data-page="home"] .research-statement,body[data-page="home"] .research-network-art{transform:none!important}body[data-page="home"] .research-network-art{min-height:0;margin-top:28px}body[data-page="home"] .berl-network-svg{width:100%}body[data-page="home"] .berl-network-svg .node-label{font-size:15px}body[data-page="home"] .berl-network-svg .node-sub{display:none}body[data-page="home"] .berl-network-svg .core-title{font-size:50px}}
+@media(prefers-reduced-motion:reduce){body[data-page="home"] .hero-slide,body[data-page="home"] .scroll-scene:before,body[data-page="home"] .research-statement,body[data-page="home"] .research-network-art{transform:none!important}body[data-page="home"] .berl-network-svg .net-orbit,body[data-page="home"] .berl-network-svg .pulse{animation:none!important}}
