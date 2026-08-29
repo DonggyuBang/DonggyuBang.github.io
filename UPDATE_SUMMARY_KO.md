@@ -14,3 +14,15 @@
 - Formspree Contact 연동 유지
 - 불필요한 구현 설명과 안내 문구 축소
 - 모바일 반응형 및 reduced-motion 대응
+
+## 2026-08-29 content and layout refinement
+- Homepage laboratory slogan revised and BERL research infographic added
+- Removed unnecessary Research Areas and News explanatory copy
+- Research page research statement rewritten
+- People group numeric labels removed
+- Member profile spacing refined
+- Member publications linked by OpenAlex author ID when available
+- OpenAlex synchronization now stores author IDs per publication
+- Publication DOI / Source action buttons fixed to consistent dimensions
+- Contact page copy rewritten for laboratory inquiries
+- Contact form text, autofill, and dropdown option contrast refined
