@@ -1,7 +1,87 @@
 [
-{"date":"2026-08-28","category":"Lab Update","title":"BERL launches its new research website","summary":"The redesigned BERL website integrates research themes, people, publications, research programs, news, and contact information into a single data-driven platform.","url":"news.html","image":"assets/images/news-website.svg","featured":true,"photo_index":0},
-{"date":"2026-08-25","category":"Research Spotlight","title":"Hydrothermal pretreatment for emerging polymer waste streams","summary":"BERL is exploring hydrothermal solubilization and pretreatment strategies to understand how polymer transformation can be linked with downstream biological conversion and resource recovery.","url":"research.html#circular-materials","image":"assets/images/news-hydrothermal.svg","featured":true,"photo_index":0},
-{"date":"2026-08-20","category":"Research Spotlight","title":"Data-driven modeling for anaerobic digestion systems","summary":"A current BERL research direction combines full-scale anaerobic digestion data with machine-learning methods to improve process interpretation, prediction, and operational decision support.","url":"research.html#ai-environment","image":"assets/images/news-ai.svg","featured":true,"photo_index":3},
-{"date":"2026-08-12","category":"Research Spotlight","title":"Microbial biodegradation and enzyme profiling of polyester materials","summary":"BERL is investigating microbial growth, extracellular enzyme activity, and polymer transformation to better understand biological degradation pathways for polyester-based materials.","url":"research.html#microbial-systems","image":"assets/images/news-microbe.svg","featured":true,"photo_index":2},
-{"date":"2026-07-31","category":"Research Spotlight","title":"Mineral-assisted control of organic matter transformation and nitrogen dynamics","summary":"BERL studies how mineral phases and chemical conditions influence organic matter transformation, nitrogen partitioning, microbial succession, and stabilization processes.","url":"research.html#organic-matter","image":"assets/images/news-mineral.svg","featured":true,"photo_index":5}
+  {
+    "slug":"berl-website-renewal-2026",
+    "date":"2026-08-28",
+    "category":"Lab Update",
+    "title":"BERL launches a renewed digital platform for research communication",
+    "summary":"BERL has reorganized its website into a research-centered platform connecting laboratory themes, people, publications, research programs, and news.",
+    "cover_photo_index":0,
+    "body":[
+      {"type":"paragraph","text":"The Bioenergy & Environmental Remediation Lab (BERL) has renewed its website to provide a clearer view of the laboratory’s research directions and scholarly activities. The new structure places environmental engineering research at the center of the visitor experience and connects research themes, people, publications, programs, news, and contact information through a consistent interface."},
+      {"type":"heading","text":"A research-first website structure"},
+      {"type":"paragraph","text":"The homepage now highlights BERL’s main environmental engineering themes through visual research cards and motion-based navigation. Publication metadata and research impact indicators continue to be synchronized through OpenAlex, while laboratory news is managed separately as article content."},
+      {"type":"image","photo_index":3,"caption":"Data-driven environmental research is integrated throughout the renewed BERL website."},
+      {"type":"heading","text":"Designed for continuous updates"},
+      {"type":"bullets","items":["Research areas can be edited from structured JSON data.","News items support full article text, headings, lists, and images.","Member groups and profiles can be expanded without redesigning the page.","GitHub Actions automatically refreshes publication metadata and deploys the site."]},
+      {"type":"paragraph","text":"The website will continue to evolve as BERL adds official member information, research outcomes, laboratory photographs, and new project updates."}
+    ]
+  },
+  {
+    "slug":"hydrothermal-polymer-waste-streams",
+    "date":"2026-08-25",
+    "category":"Research Focus",
+    "title":"Hydrothermal transformation of emerging polymer waste streams",
+    "summary":"BERL is examining how hydrothermal conditions alter polymer-containing waste streams and how those changes may affect downstream biological conversion and resource recovery.",
+    "cover_photo_index":4,
+    "body":[
+      {"type":"paragraph","text":"Emerging polymer-containing waste streams require treatment strategies that consider both material transformation and downstream biological processing. BERL is exploring hydrothermal pretreatment as a controlled way to alter polymer structure, release soluble products, and evaluate whether thermal transformation can improve compatibility with subsequent environmental biotechnology processes."},
+      {"type":"heading","text":"Connecting material transformation with biological conversion"},
+      {"type":"paragraph","text":"The research examines temperature-dependent changes in solid and aqueous phases and links these changes with physicochemical characteristics relevant to anaerobic digestion and other biological treatment processes."},
+      {"type":"image","photo_index":1,"caption":"Resource-recovery research connects pretreatment with downstream biological conversion."},
+      {"type":"heading","text":"Key analytical questions"},
+      {"type":"bullets","items":["How much of the original material is transferred into the aqueous phase?","Which dissolved organic products are formed under different thermal conditions?","How do pretreatment conditions influence subsequent biodegradability and methane-production potential?","Which analytical indicators best describe changes in polymer molecular structure and dissolved organic matter?"]},
+      {"type":"paragraph","text":"This research direction supports BERL’s broader interest in circular materials, waste valorization, and the integration of physicochemical pretreatment with biological resource recovery."}
+    ]
+  },
+  {
+    "slug":"data-driven-anaerobic-digestion",
+    "date":"2026-08-20",
+    "category":"Research Focus",
+    "title":"Data-driven modeling for anaerobic digestion systems",
+    "summary":"BERL combines operational anaerobic-digestion data with machine-learning methods to improve process interpretation, prediction, and decision support.",
+    "cover_photo_index":3,
+    "body":[
+      {"type":"paragraph","text":"Anaerobic digestion is governed by interacting feedstock, loading, retention-time, microbial, and operational variables. BERL is developing data-driven approaches that complement mechanistic understanding with statistical learning and machine-learning models."},
+      {"type":"heading","text":"From operational records to interpretable models"},
+      {"type":"paragraph","text":"The workflow emphasizes data quality, feature harmonization, robust validation, and model interpretation rather than prediction accuracy alone. Full-scale plant records can be used to compare model families and determine which operational variables provide stable explanatory value across systems."},
+      {"type":"image","photo_index":3,"caption":"Environmental data science links monitoring, process records, and predictive analytics."},
+      {"type":"heading","text":"Modeling priorities"},
+      {"type":"bullets","items":["Biogas production and yield prediction","Volatile-solids removal and process-performance estimation","Feature selection and sensitivity analysis","Cross-plant generalization and uncertainty assessment","Decision-support tools for process monitoring"]},
+      {"type":"paragraph","text":"The long-term objective is to integrate environmental process knowledge with transparent, data-driven tools that can support both research and operational decision making."}
+    ]
+  },
+  {
+    "slug":"microbial-polyester-degradation",
+    "date":"2026-08-12",
+    "category":"Research Focus",
+    "title":"Microbial biodegradation and enzyme profiling of polyester materials",
+    "summary":"BERL is investigating microbial growth, extracellular enzyme activity, and polymer transformation to resolve biological degradation pathways for polyester-based materials.",
+    "cover_photo_index":2,
+    "body":[
+      {"type":"paragraph","text":"Biodegradation of polyester materials depends on the interaction between polymer properties, microbial physiology, extracellular enzymes, and environmental conditions. BERL is evaluating these factors through controlled cultivation and material-characterization experiments."},
+      {"type":"heading","text":"Linking growth, enzymes, and material change"},
+      {"type":"paragraph","text":"A central objective is to distinguish simple microbial growth from evidence of polymer transformation. Growth curves and enzyme assays are therefore interpreted together with changes in material mass, molecular weight, surface chemistry, or other polymer-specific indicators."},
+      {"type":"image","photo_index":2,"caption":"Microbial systems research combines cultivation, enzyme analysis, and engineered bioreactors."},
+      {"type":"heading","text":"Representative measurements"},
+      {"type":"bullets","items":["Growth under controlled temperature and inoculation conditions","Esterolytic and hydrolytic enzyme activity","Polymer molecular-weight changes","Oxygen-consumption or biodegradation indicators","Functional-gene and microbial-characterization data"]},
+      {"type":"paragraph","text":"The work contributes to BERL’s broader research on environmental biotechnology and circular-material transformation."}
+    ]
+  },
+  {
+    "slug":"mineral-organic-matter-nitrogen",
+    "date":"2026-07-31",
+    "category":"Research Focus",
+    "title":"Mineral-assisted control of organic matter transformation and nitrogen dynamics",
+    "summary":"BERL studies how mineral phases and chemical conditions influence organic matter transformation, nitrogen partitioning, microbial succession, and stabilization.",
+    "cover_photo_index":5,
+    "body":[
+      {"type":"paragraph","text":"Mineral phases can alter the chemical environment in which organic matter decomposes by changing ionic strength, pH-related responses, dissolved constituents, and the availability of reactive surfaces. BERL investigates how these mineral–organic interactions affect both transformation pathways and microbial succession."},
+      {"type":"heading","text":"Chemical conditions and nitrogen partitioning"},
+      {"type":"paragraph","text":"Particular attention is given to ammoniacal nitrogen, dissolved organic matter, and mineral-associated changes that can influence volatilization, stabilization, or subsequent biological processing."},
+      {"type":"image","photo_index":5,"caption":"Mineral–water interactions are examined alongside organic matter and microbial transformation."},
+      {"type":"heading","text":"Integrated characterization"},
+      {"type":"bullets","items":["pH, electrical conductivity, and nitrogen species","Dissolved organic carbon and optical DOM characteristics","Mineralogical and elemental characterization","Microbial community succession","Multivariate relationships among chemistry, organic matter, and microorganisms"]},
+      {"type":"paragraph","text":"This research supports a systems-level understanding of how mineral amendments can reshape environmental transformation processes before organic matter enters longer-term stabilization pathways."}
+    ]
+  }
 ]
