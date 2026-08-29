@@ -1,9 +1,0 @@
-{
-  "name": "BERL - Bioenergy & Environmental Remediation Lab",
-  "short_name": "BERL",
-  "start_url": "./",
-  "display": "standalone",
-  "background_color": "#061a29",
-  "theme_color": "#061a29",
-  "icons": []
-}

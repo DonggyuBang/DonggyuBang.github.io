@@ -1,4 +1,0 @@
-document.addEventListener("DOMContentLoaded",async()=>{
- const data=await BERL.json("data/projects.json");
- document.getElementById("project-list").innerHTML=data.map((p,i)=>`<article class="card project-card"><div class="project-image sprite-photo" style="background-position:${BERL.spritePos(p.photo_index??i)}"></div><div class="project-copy"><span class="pill">${BERL.esc(p.status)}</span><h3>${BERL.esc(p.title)}</h3><p>${BERL.esc(p.summary)}</p><div class="detail-list"><div class="detail-row"><strong>Period</strong><span>${BERL.esc(p.period)}</span></div><div class="detail-row"><strong>Research area</strong><span>${BERL.esc(p.area)}</span></div></div><div class="project-meta">${(p.keywords||[]).map(k=>`<span class="tag">${BERL.esc(k)}</span>`).join("")}</div></div></article>`).join("");
-});
