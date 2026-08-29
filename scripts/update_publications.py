@@ -14,7 +14,7 @@ def request_json(url, params=None, retries=4):
     if API_KEY:
         params["api_key"]=API_KEY
     full=url+("?" + urllib.parse.urlencode(params) if params else "")
-    headers={"User-Agent":"BERL-publication-sync/3.0"}
+    headers={"User-Agent":"BERL-publication-sync/3.1"}
     for attempt in range(retries):
         try:
             with urllib.request.urlopen(urllib.request.Request(full,headers=headers), timeout=60) as r:
@@ -38,10 +38,13 @@ def clean_doi(v):
     return str(v or "").replace("https://doi.org/","").replace("http://doi.org/","").strip()
 
 def convert_work(w):
-    authors=[]
+    authors=[]; author_ids=[]
     for x in w.get("authorships") or []:
-        n=((x.get("author") or {}).get("display_name") or "").strip()
+        author=x.get("author") or {}
+        n=(author.get("display_name") or "").strip()
+        aid=(author.get("id") or "").split("/")[-1].strip()
         if n: authors.append(n)
+        if aid: author_ids.append(aid)
     loc=w.get("primary_location") or {}; src=loc.get("source") or {}
     topics=[x.get("display_name") for x in (w.get("topics") or [])[:4] if x.get("display_name")]
     doi=clean_doi(w.get("doi"))
@@ -50,6 +53,7 @@ def convert_work(w):
         "year":w.get("publication_year"),
         "title":w.get("title") or "Untitled",
         "authors":authors,
+        "author_ids":author_ids,
         "journal":src.get("display_name") or "",
         "doi":doi,
         "url":loc.get("landing_page_url") or (f"https://doi.org/{doi}" if doi else w.get("id","")),
