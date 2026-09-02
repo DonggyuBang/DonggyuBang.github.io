@@ -16,7 +16,7 @@ const xy=e=>({x:parseFloat(e.style.getPropertyValue('--berl-x'))||0,y:parseFloat
 const move=(e,x,y,r=0)=>{e.style.setProperty('--berl-x',x+'px');e.style.setProperty('--berl-y',y+'px');e.style.setProperty('--berl-r',r+'deg');e.style.transform='translate(var(--berl-x),var(--berl-y)) rotate(var(--berl-r))'};
 function path(e){if(!e)return'';if(e.dataset.berlBlockKey)return`[data-berl-block-key="${ce(e.dataset.berlBlockKey)}"]`;if(e.id)return'#'+ce(e.id);let a=[],c=e;while(c&&c!==document.body){if(c.id){a.unshift('#'+ce(c.id));break}let p=c.tagName.toLowerCase(),par=c.parentElement;if(par){let same=[...par.children].filter(x=>x.tagName===c.tagName);if(same.length>1)p+=`:nth-of-type(${same.indexOf(c)+1})`}a.unshift(p);c=par;if(c?.id){a.unshift('#'+ce(c.id));break}}return a.join(' > ')}
 const txt=e=>String(e?.innerText??e?.textContent??'').replace(/\u00a0/g,' ');
-function putText(e,t){let a=String(t).replace(/\r/g,'').split('\n');e.replaceChildren();a.forEach((x,i)=>{if(i)e.append(document.createElement('br'));e.append(document.createTextNode(x))})}
+function putText(e,t){t=String(t).replace(/\r/g,'');if(txt(e)===t)return;let a=t.split('\n');e.replaceChildren();a.forEach((x,i)=>{if(i)e.append(document.createElement('br'));e.append(document.createTextNode(x))})}
 const textable=e=>!!e&&e.tagName!=='IMG'&&(e.matches(T)||['text_box','heading','button','card','box'].includes(e.dataset.berlBlockType));
 function makeBlock(r){let e,t=r.block_type||'legacy';
  if(t==='text_box'){e=document.createElement('div');e.className='berl-cms-block berl-free-item berl-text-box';e.textContent=r.text_content||'Text box'}
