@@ -27,14 +27,21 @@
     Object.entries(row.styles||{}).forEach(([k,v])=>{if(v!=null&&k in el.style)el.style[k]=v});
     el.classList.toggle('berl-hidden-by-editor',!!row.is_hidden);
   }
+  function applyAll(){overrides.forEach(applyOverride)}
   async function loadOverrides(){
     const {data,error}=await sb.from('site_overrides').select('*').eq('page_path',pagePath);
     if(error){console.warn('BERL editor overrides',error);return}
-    overrides=new Map((data||[]).map(r=>[r.selector,r]));(data||[]).forEach(applyOverride);
+    overrides=new Map((data||[]).map(r=>[r.selector,r]));applyAll();
   }
   function markEditable(root=document){
     const candidates=root.querySelectorAll?.('h1,h2,h3,h4,h5,h6,p,span,a,button,img,li,strong,em,small,div[class*="card"],section,figure')||[];
     candidates.forEach(el=>{if(el.closest(ignoreSelector)||el.closest('#berl-admin-bar,.berl-editor-backdrop,.berl-login-box'))return;if(el.children.length>6)return;el.dataset.berlEditable='1'});
+  }
+  function startObserver(){
+    if(observer)return;
+    let queued=false;
+    observer=new MutationObserver(()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;applyAll();if(isAdmin)markEditable()})});
+    observer.observe(document.body,{childList:true,subtree:true});
   }
   function setEditMode(on){editMode=on;document.body.classList.toggle('berl-edit-mode',on);const b=document.getElementById('berlEditToggle');if(b)b.textContent=on?'Exit edit mode':'Edit page';if(on)markEditable()}
   function makeBar(){
@@ -51,7 +58,7 @@
     box.querySelector('#berlLoginCancel').onclick=()=>box.remove();
     box.querySelector('#berlLoginSubmit').onclick=async()=>{const msg=box.querySelector('#berlLoginMsg');msg.textContent='Signing in…';const {error}=await sb.auth.signInWithPassword({email:box.querySelector('#berlEmail').value.trim(),password:box.querySelector('#berlPassword').value});if(error){msg.textContent=error.message;return}const {data,error:e2}=await sb.rpc('is_admin');if(e2||data!==true){await sb.auth.signOut();msg.textContent='This account is not approved as an administrator.';return}box.remove();activateAdmin()};
   }
-  function activateAdmin(){isAdmin=true;document.getElementById('berlAdminStatus').textContent='Admin';document.getElementById('berlLoginBtn').hidden=true;document.getElementById('berlEditToggle').hidden=false;document.getElementById('berlLogoutBtn').hidden=false;markEditable();if(!observer){observer=new MutationObserver(()=>{markEditable();overrides.forEach(applyOverride)});observer.observe(document.body,{childList:true,subtree:true})}}
+  function activateAdmin(){isAdmin=true;document.getElementById('berlAdminStatus').textContent='Admin';document.getElementById('berlLoginBtn').hidden=true;document.getElementById('berlEditToggle').hidden=false;document.getElementById('berlLogoutBtn').hidden=false;markEditable()}
   function selectedStyles(el){const cs=getComputedStyle(el);return Object.fromEntries(styleProps.map(p=>[p,cs[p]]))}
   async function uploadImage(file){const ext=(file.name.split('.').pop()||'bin').toLowerCase();const key=`${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;const {error}=await sb.storage.from('site-images').upload(key,file,{upsert:false});if(error)throw error;return sb.storage.from('site-images').getPublicUrl(key).data.publicUrl}
   function openEditor(el){
@@ -71,5 +78,5 @@
   }
   function rgbToHex(v){const m=String(v).match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);if(!m)return '#000000';return '#'+[m[1],m[2],m[3]].map(x=>(+x).toString(16).padStart(2,'0')).join('')}
   document.addEventListener('click',e=>{if(!editMode||!isAdmin)return;const el=e.target.closest('[data-berl-editable="1"]');if(!el||el.closest('#berl-admin-bar,.berl-editor-backdrop,.berl-login-box'))return;e.preventDefault();e.stopPropagation();openEditor(el)},true);
-  (async()=>{makeBar();await loadOverrides();const {data:{session}}=await sb.auth.getSession();if(session){const {data}=await sb.rpc('is_admin');if(data===true)activateAdmin()}})();
+  (async()=>{makeBar();await loadOverrides();startObserver();const {data:{session}}=await sb.auth.getSession();if(session){const {data}=await sb.rpc('is_admin');if(data===true)activateAdmin()}})();
 })();
