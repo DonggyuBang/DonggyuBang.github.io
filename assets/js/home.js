@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded',async()=>{
   try{
     const[cfg,metrics,pubs,research,news]=await Promise.all([
-      BERL.json('data/site.json'),BERL.json('data/metrics.json'),BERL.json('data/publications.json'),BERL.json('data/research.json'),BERL.json('data/news.json')
+      BERL.json('data/site.json'),BERL.json('data/metrics.json'),BERL.json('data/publications.json'),BERL.json('data/research.json'),BERLData.news()
     ]);
     const detail=n=>`news-detail.html?id=${encodeURIComponent(n.slug)}`;
 
