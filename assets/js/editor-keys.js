@@ -22,4 +22,5 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',assign);else assign();
   const start=()=>{const m=root();if(m)new MutationObserver(run).observe(m,{childList:true,subtree:true})};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+  if(!document.getElementById('berlEditorManager')){const s=document.createElement('script');s.id='berlEditorManager';s.src='assets/js/editor-manager.js?v=20260902k';document.head.appendChild(s)}
 })();
