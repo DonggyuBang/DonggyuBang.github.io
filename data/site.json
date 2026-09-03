@@ -1,5 +1,5 @@
 {
-  "lab_name": "Bioenergy & Environmental Remediation Lab",
+  "lab_name": "BIOENERGY & ENVIRONMENTAL ENGINEERING RESEARCH LAB",
   "short_name": "BERL",
   "institution": "Hanyang University",
   "department": "Department of Earth Resources and Environmental Engineering",
@@ -11,9 +11,9 @@
   "copyright_name": "BERL",
   "google_scholar_lab_url": "https://scholar.google.co.kr/citations?user=iLAWDREAAAAJ&hl=en",
   "github_url": "",
-  "tagline": "Bioenergy · Remediation · AI",
-  "hero_title": "Engineering a cleaner circular future.",
-  "hero_description": "BERL explores bioenergy, environmental remediation, microbial systems, circular materials, and AI-driven environmental engineering.",
-  "research_statement": "We connect environmental biotechnology, remediation, circular materials, and data science to understand mechanisms and translate them into scalable environmental processes.",
+  "tagline": "Bioenergy · Environmental Engineering · AI",
+  "hero_title": "BIOENERGY & ENVIRONMENTAL ENGINEERING RESEARCH LAB",
+  "hero_description": "BIOENERGY & ENVIRONMENTAL ENGINEERING RESEARCH LAB at Hanyang University advances bioenergy, environmental engineering, microbial systems, circular materials, remediation, and data-driven research.",
+  "research_statement": "We connect bioenergy, environmental engineering, environmental biotechnology, remediation, circular materials, and data science to understand mechanisms and translate them into scalable environmental processes.",
   "location_detail": "Department of Earth Resources and Environmental Engineering, Hanyang University, Seoul"
 }
