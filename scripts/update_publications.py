@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 
 ROOT=Path(__file__).resolve().parents[1]
 DATA=ROOT/"data"
-CONFIG=json.loads((DATA/"scholar-config.json").read_text(encoding="utf-8"))
+MEMBERS=json.loads((DATA/"members.json").read_text(encoding="utf-8"))
 API_KEY=os.getenv("OPENALEX_API_KEY","").strip()
 
 def request_json(url, params=None, retries=6):
@@ -14,7 +14,7 @@ def request_json(url, params=None, retries=6):
     if API_KEY:
         params["api_key"]=API_KEY
     full=url+("?" + urllib.parse.urlencode(params) if params else "")
-    headers={"User-Agent":"BERL-publication-sync/3.2"}
+    headers={"User-Agent":"BERL-publication-sync/4.0"}
     for attempt in range(retries):
         try:
             with urllib.request.urlopen(urllib.request.Request(full,headers=headers), timeout=60) as r:
@@ -38,7 +38,7 @@ def request_json(url, params=None, retries=6):
             raise
 
 def author_id(v):
-    return str(v or "").strip().replace("https://openalex.org/authors/","").replace("https://openalex.org/","")
+    return str(v or "").strip().replace("https://openalex.org/authors/","").replace("https://openalex.org/","").strip("/")
 
 def clean_doi(v):
     return str(v or "").replace("https://doi.org/","").replace("http://doi.org/","").strip()
@@ -100,41 +100,70 @@ def calc_h(vals):
     return h
 
 def main():
-    authors=[a for a in CONFIG.get("authors",[]) if author_id(a.get("openalex_id"))]
-    if not authors:
-        raise RuntimeError("No OpenAlex author ID is configured in data/scholar-config.json.")
+    linked_members=[m for m in MEMBERS if m.get("id") and author_id(m.get("openalex_id"))]
     if not API_KEY:
         print("NOTICE: OPENALEX_API_KEY secret is not set. Trying keyless access; add a free key for reliable scheduled updates.")
-    merged={};profiles=[]
-    for a in authors:
-        aid=author_id(a["openalex_id"])
-        print(f"Fetching author {a.get('name','')} ({aid})")
-        profile=fetch_author_profile(aid);profiles.append(profile)
-        print(f"OpenAlex resolved: {profile.get('display_name')} · works={profile.get('works_count')} · citations={profile.get('cited_by_count')}")
-        for p in fetch_works(aid):
+
+    merged={}
+    member_metrics={}
+    now=datetime.now(timezone.utc).isoformat()
+
+    for m in linked_members:
+        aid=author_id(m.get("openalex_id"))
+        print(f"Fetching member {m.get('name','')} ({aid})")
+        profile=fetch_author_profile(aid)
+        works=fetch_works(aid)
+        cites=[int(p.get("cited_by_count") or 0) for p in works]
+        stats=profile.get("summary_stats") or {}
+        h=int(stats.get("h_index") or calc_h(cites))
+        i10=int(stats.get("i10_index") or sum(1 for c in cites if c>=10))
+        total_cites=int(profile.get("cited_by_count") or sum(cites))
+        works_count=int(profile.get("works_count") or len(works))
+
+        member_metrics[m["id"]]={
+            "member_id":m["id"],
+            "name":m.get("name",profile.get("display_name") or ""),
+            "openalex_id":aid,
+            "publications":works_count,
+            "linked_publications":len(works),
+            "citations":total_cites,
+            "h_index":h,
+            "i10_index":i10,
+            "open_access_works":sum(1 for p in works if p.get("open_access")),
+            "last_updated":now,
+            "source":"OpenAlex",
+            "status":"Synchronized"
+        }
+        print(f"  resolved={profile.get('display_name')} works={works_count} citations={total_cites} h={h} i10={i10}")
+
+        for p in works:
             k=pkey(p)
             if k not in merged or p.get("cited_by_count",0)>merged[k].get("cited_by_count",0):
                 merged[k]=p
+
     manual_path=DATA/"manual-publications.json"
     manual=json.loads(manual_path.read_text(encoding="utf-8")) if manual_path.exists() else []
-    for p in manual: merged[pkey(p)]=p
+    for p in manual:
+        merged[pkey(p)]=p
+
     pubs=sorted(merged.values(),key=lambda p:(p.get("year") or 0,p.get("cited_by_count") or 0),reverse=True)
     (DATA/"publications.json").write_text(json.dumps(pubs,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
-    cites=[p.get("cited_by_count",0) for p in pubs]
-    if len(profiles)==1:
-        stats=profiles[0].get("summary_stats") or {}
-        h=int(stats.get("h_index") or calc_h(cites))
-        i10=int(stats.get("i10_index") or sum(1 for c in cites if int(c)>=10))
-        total_cites=int(profiles[0].get("cited_by_count") or sum(cites))
-    else:
-        h=calc_h(cites);i10=sum(1 for c in cites if int(c)>=10);total_cites=sum(cites)
+    (DATA/"member-metrics.json").write_text(json.dumps(member_metrics,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+
+    cites=[int(p.get("cited_by_count") or 0) for p in pubs]
     metrics={
-        "publications":len(pubs),"citations":total_cites,"h_index":h,"i10_index":i10,
+        "publications":len(pubs),
+        "citations":sum(cites),
+        "h_index":calc_h(cites),
+        "i10_index":sum(1 for c in cites if c>=10),
         "open_access_works":sum(1 for p in pubs if p.get("open_access")),
-        "last_updated":datetime.now(timezone.utc).isoformat(),"source":"OpenAlex","status":"Synchronized"
+        "linked_members":len(member_metrics),
+        "last_updated":now,
+        "source":"OpenAlex",
+        "status":"Synchronized"
     }
     (DATA/"metrics.json").write_text(json.dumps(metrics,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
-    print(f"Updated {len(pubs)} unique publications. citations={total_cites}, h-index={h}, i10-index={i10}")
+    print(f"Updated {len(member_metrics)} member profiles and {len(pubs)} unique publications.")
 
 if __name__=="__main__":
     main()
