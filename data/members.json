@@ -1,7 +1,7 @@
 [
   {
-    "id": "byung-hun-jeon",
-    "name": "Byung-Hun Jeon",
+    "id": "byong-hun-jeon",
+    "name": "Byong-Hun Jeon",
     "position": "Professor / Principal Investigator",
     "group": "Advisor",
     "affiliation": "Hanyang University",
@@ -36,19 +36,13 @@
     "department": "Department of Earth Resources and Environmental Engineering",
     "email": "",
     "photo": "assets/images/default-avatar.svg",
-    "research_interests": [
-      "Anaerobic Digestion",
-      "Resource Recovery",
-      "Waste Valorization"
-    ],
+    "research_interests": ["Anaerobic Digestion","Resource Recovery","Waste Valorization"],
     "bio": "Example profile entry. Replace all fields with the actual member information.",
     "degree_program": "M.S. in Earth Resources and Environmental Engineering",
     "research_topic": "Anaerobic digestion and resource recovery",
     "office": "Example: Engineering Building, Room XXX",
     "joined": "2026",
-    "education": [
-      "B.S. in Environmental Engineering, Example University (2026)"
-    ],
+    "education": ["B.S. in Environmental Engineering, Example University (2026)"],
     "scholar_url": "",
     "orcid_url": "",
     "researchgate_url": "",
@@ -65,20 +59,13 @@
     "department": "Department of Earth Resources and Environmental Engineering",
     "email": "",
     "photo": "assets/images/default-avatar.svg",
-    "research_interests": [
-      "Environmental Biotechnology",
-      "Microbial Ecology",
-      "Biodegradation"
-    ],
+    "research_interests": ["Environmental Biotechnology","Microbial Ecology","Biodegradation"],
     "bio": "Example profile entry. Replace all fields with the actual member information.",
     "degree_program": "Ph.D. in Earth Resources and Environmental Engineering",
     "research_topic": "Microbial processes and environmental biotechnology",
     "office": "Example: Engineering Building, Room XXX",
     "joined": "2026",
-    "education": [
-      "M.S. in Environmental Engineering, Example University (2026)",
-      "B.S. in Environmental Engineering, Example University (2024)"
-    ],
+    "education": ["M.S. in Environmental Engineering, Example University (2026)","B.S. in Environmental Engineering, Example University (2024)"],
     "scholar_url": "",
     "orcid_url": "",
     "researchgate_url": "",
@@ -95,19 +82,13 @@
     "department": "Department of Earth Resources and Environmental Engineering",
     "email": "",
     "photo": "assets/images/default-avatar.svg",
-    "research_interests": [
-      "Circular Materials",
-      "Biodegradable Plastics",
-      "Hydrothermal Pretreatment"
-    ],
+    "research_interests": ["Circular Materials","Biodegradable Plastics","Hydrothermal Pretreatment"],
     "bio": "Example profile entry. Replace all fields with the actual member information.",
     "degree_program": "Integrated M.S./Ph.D. Program",
     "research_topic": "Polymer transformation and circular environmental systems",
     "office": "Example: Engineering Building, Room XXX",
     "joined": "2026",
-    "education": [
-      "B.S. in Environmental Engineering, Example University (2026)"
-    ],
+    "education": ["B.S. in Environmental Engineering, Example University (2026)"],
     "scholar_url": "",
     "orcid_url": "",
     "researchgate_url": "",
@@ -124,19 +105,13 @@
     "department": "Department of Earth Resources and Environmental Engineering",
     "email": "",
     "photo": "assets/images/default-avatar.svg",
-    "research_interests": [
-      "Bioprocess Engineering",
-      "Environmental Microbiology",
-      "Advanced Characterization"
-    ],
+    "research_interests": ["Bioprocess Engineering","Environmental Microbiology","Advanced Characterization"],
     "bio": "Example profile entry. Replace all fields with the actual member information.",
     "degree_program": "Postdoctoral Researcher",
     "research_topic": "Environmental bioprocess engineering",
     "office": "Example: Engineering Building, Room XXX",
     "joined": "2026",
-    "education": [
-      "Ph.D. in Environmental Engineering, Example University (2026)"
-    ],
+    "education": ["Ph.D. in Environmental Engineering, Example University (2026)"],
     "scholar_url": "",
     "orcid_url": "",
     "researchgate_url": "",
@@ -153,19 +128,13 @@
     "department": "Department of Earth Resources and Environmental Engineering",
     "email": "",
     "photo": "assets/images/default-avatar.svg",
-    "research_interests": [
-      "Environmental Data Science",
-      "Process Modeling",
-      "Sustainable Systems"
-    ],
+    "research_interests": ["Environmental Data Science","Process Modeling","Sustainable Systems"],
     "bio": "Example profile entry. Replace all fields with the actual member information.",
     "degree_program": "Research Professor",
     "research_topic": "Data-driven environmental engineering and process optimization",
     "office": "Example: Engineering Building, Room XXX",
     "joined": "2026",
-    "education": [
-      "Ph.D. in Environmental Engineering, Example University"
-    ],
+    "education": ["Ph.D. in Environmental Engineering, Example University"],
     "scholar_url": "",
     "orcid_url": "",
     "researchgate_url": "",
