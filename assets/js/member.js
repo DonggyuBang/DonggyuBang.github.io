@@ -22,9 +22,16 @@ document.addEventListener('DOMContentLoaded',async()=>{
       ['i10-index',mm.i10_index]
     ].map(([l,v])=>`<div class="metric"><div class="metric-value">${BERL.fmt(v)}</div><div class="metric-label">${l}</div></div>`).join('');
   }else{
-    metricsEl.innerHTML='<div class="empty">Scholarly metrics will appear after an OpenAlex Author ID is linked to this profile.</div>';
+    metricsEl.innerHTML='';
   }
 
   const mine=targetId?pubs.filter(p=>(p.author_ids||[]).some(a=>String(a).replace('https://openalex.org/authors/','').replace('https://openalex.org/','').replace('authors/','').replace(/^\/+|\/+$/g,'').trim()===targetId)).sort((a,b)=>(b.year||0)-(a.year||0)):[];
-  document.getElementById('member-pubs').innerHTML=mine.length?mine.map(p=>`<article class="publication"><div class="pub-year">${p.year||''}</div><div><div class="pub-title">${BERL.esc(p.title)}</div><div class="pub-meta">${BERL.esc((p.authors||[]).join(', '))}${p.journal?' · '+BERL.esc(p.journal):''}${p.cited_by_count?` · ${BERL.fmt(p.cited_by_count)} citations`:''}</div></div><div class="pub-links">${p.doi?`<a href="https://doi.org/${BERL.esc(p.doi)}" target="_blank" rel="noopener">DOI ↗</a>`:''}${p.id?`<a href="https://openalex.org/works/${BERL.esc(p.id)}" target="_blank" rel="noopener">OpenAlex ↗</a>`:''}</div></article>`).join(''):`<div class="empty">${targetId?'No linked publications found for this OpenAlex profile.':'Linked publications will appear after an OpenAlex Author ID is linked to this profile.'}</div>`;
+  const pubsEl=document.getElementById('member-pubs');
+  if(!targetId){
+    pubsEl.innerHTML='';
+  }else if(mine.length){
+    pubsEl.innerHTML=mine.map(p=>`<article class="publication"><div class="pub-year">${p.year||''}</div><div><div class="pub-title">${BERL.esc(p.title)}</div><div class="pub-meta">${BERL.esc((p.authors||[]).join(', '))}${p.journal?' · '+BERL.esc(p.journal):''}${p.cited_by_count?` · ${BERL.fmt(p.cited_by_count)} citations`:''}</div></div><div class="pub-links">${p.doi?`<a href="https://doi.org/${BERL.esc(p.doi)}" target="_blank" rel="noopener">DOI ↗</a>`:''}${p.id?`<a href="https://openalex.org/works/${BERL.esc(p.id)}" target="_blank" rel="noopener">OpenAlex ↗</a>`:''}</div></article>`).join('');
+  }else{
+    pubsEl.innerHTML='<div class="empty">No linked publications found for this OpenAlex profile.</div>';
+  }
 });
