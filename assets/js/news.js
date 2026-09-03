@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded',async()=>{
-  const PAGE_SIZE=7;
+  const PAGE_SIZE=6;
   const detail=n=>`news-detail.html?id=${encodeURIComponent(n.slug)}`;
   const $=id=>document.getElementById(id);
   const cfg=window.BERL_SUPABASE||{};
-  const sb=(cfg.url&&cfg.publishableKey&&window.supabase?.createClient)?window.supabase.createClient(cfg.url,cfg.publishableKey):null;
+  const sb=(cfg.url&&cfg.publishableKey&&window.supabase?.createClient)?window.supabase.createClient(cfg.url,cfg.publishableKey,{global:{fetch:(url,options={})=>fetch(url,{...options,cache:'no-store'})}}):null;
   let news=[];
   let page=Math.max(1,parseInt(new URLSearchParams(location.search).get('page')||'1',10)||1);
   let admin=false;
@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
   const slugify=text=>String(text||'').normalize('NFKC').toLowerCase().replace(/[^\p{L}\p{N}\s-]/gu,'').trim().replace(/\s+/g,'-').replace(/-+/g,'-').slice(0,90);
   const safeFileName=name=>String(name||'image').toLowerCase().replace(/[^a-z0-9._-]+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'').slice(-80)||'image';
   const today=()=>new Date().toISOString().slice(0,10);
+  const archive=()=>news.slice(1);
 
   function pageNumbers(total,current){
     if(total<=7)return Array.from({length:total},(_,i)=>i+1);
@@ -28,7 +29,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
 
   function renderPagination(){
     const el=$('news-pagination');
-    const total=Math.max(1,Math.ceil(news.length/PAGE_SIZE));
+    const total=Math.max(1,Math.ceil(archive().length/PAGE_SIZE));
     page=Math.min(page,total);
     if(total<=1){el.innerHTML='';return;}
     const nums=pageNumbers(total,page);
@@ -37,27 +38,28 @@ document.addEventListener('DOMContentLoaded',async()=>{
   }
 
   function goPage(next){
-    const total=Math.max(1,Math.ceil(news.length/PAGE_SIZE));
+    const total=Math.max(1,Math.ceil(archive().length/PAGE_SIZE));
     page=Math.max(1,Math.min(total,next));
     const u=new URL(location.href);
     page===1?u.searchParams.delete('page'):u.searchParams.set('page',page);
     history.replaceState({},'',u);
     renderNews();
-    document.querySelector('#news-feature')?.closest('section')?.scrollIntoView({behavior:'smooth',block:'start'});
+    document.querySelector('#news-list')?.closest('section')?.scrollIntoView({behavior:'smooth',block:'start'});
   }
 
   function renderNews(){
+    const featured=news[0];
     const start=(page-1)*PAGE_SIZE;
-    const items=news.slice(start,start+PAGE_SIZE);
-    const f=items[0];
-    $('news-feature').innerHTML=f?`<a class="news-feature" href="${detail(f)}"><div class="news-image" style="background-image:url('${escAttr(f.image||'assets/images/generated/hero-landscape.png')}')"></div><div class="news-copy"><div class="date">${BERL.esc(f.date)} · ${BERL.esc(f.category)}</div><h2>${BERL.esc(f.title)}</h2><p>${BERL.esc(f.summary)}</p><span class="read-more">Read full story →</span></div></a>`:'';
-    $('news-list').innerHTML=items.slice(1).map(n=>`<a class="card news-card" href="${detail(n)}"><div class="news-image" style="background-image:url('${escAttr(n.image||'assets/images/generated/research-microbial.png')}')"></div><div class="news-copy"><div class="date">${BERL.esc(n.date)} · ${BERL.esc(n.category)}</div><h3>${BERL.esc(n.title)}</h3><span class="read-more">Read story →</span></div></a>`).join('');
+    const items=archive().slice(start,start+PAGE_SIZE);
+    $('news-feature').innerHTML=featured?`<a class="news-feature" href="${detail(featured)}"><div class="news-image" style="background-image:url('${escAttr(featured.image||'assets/images/generated/hero-landscape.png')}')"></div><div class="news-copy"><div class="date">${BERL.esc(featured.date)} · ${BERL.esc(featured.category)}</div><h2>${BERL.esc(featured.title)}</h2><p>${BERL.esc(featured.summary)}</p><span class="read-more">Read full story →</span></div></a>`:'';
+    $('news-list').innerHTML=items.map(n=>`<a class="card news-card" href="${detail(n)}"><div class="news-image" style="background-image:url('${escAttr(n.image||'assets/images/generated/research-microbial.png')}')"></div><div class="news-copy"><div class="date">${BERL.esc(n.date)} · ${BERL.esc(n.category)}</div><h3>${BERL.esc(n.title)}</h3><span class="read-more">Read story →</span></div></a>`).join('');
     renderPagination();
   }
 
   async function loadNews(){
-    news=[...(await BERLData.news())].sort((a,b)=>String(b.date).localeCompare(String(a.date))||String(b.created_at||'').localeCompare(String(a.created_at||'')));
-    const total=Math.max(1,Math.ceil(news.length/PAGE_SIZE));
+    const loaded=await BERLData.news();
+    news=[...loaded].sort((a,b)=>String(b.date).localeCompare(String(a.date))||String(b.created_at||'').localeCompare(String(a.created_at||'')));
+    const total=Math.max(1,Math.ceil(archive().length/PAGE_SIZE));
     page=Math.min(page,total);
     renderNews();
   }
@@ -73,9 +75,11 @@ document.addEventListener('DOMContentLoaded',async()=>{
         }
       }catch{}
     }
+    const actions=document.querySelector('.news-page-actions');
     const btn=$('news-write-btn'),note=$('news-write-note');
-    btn.disabled=!admin;
-    note.textContent=admin?'Administrator':'Login required';
+    if(actions)actions.hidden=!admin;
+    if(btn){btn.disabled=!admin;btn.hidden=!admin;}
+    if(note){note.textContent='';note.hidden=true;}
     return admin;
   }
 
@@ -205,11 +209,14 @@ document.addEventListener('DOMContentLoaded',async()=>{
       let image='';
       if(coverFile){$('news-composer-status').textContent='Uploading cover…';image=await uploadImage(coverFile,'cover');}
       const row={slug,date,category,title,summary,image,body:[{type:'rich',html:rich}],is_published:true,updated_at:new Date().toISOString()};
-      const {error}=await sb.from('news').insert(row);
+      const {data:saved,error}=await sb.from('news').insert(row).select('id,slug,date,category,title,summary,image,body,is_published,created_at,updated_at').single();
       if(error)throw error;
+      if(!saved?.id)throw new Error('The story could not be confirmed after saving.');
       $('news-composer-status').textContent='Published';
       $('news-composer').hidden=true;$('news-composer').setAttribute('aria-hidden','true');document.body.classList.remove('news-composer-open');
       const u=new URL(location.href);u.searchParams.delete('page');history.replaceState({},'',u);page=1;
+      news=[saved,...news.filter(n=>n.id!==saved.id)].sort((a,b)=>String(b.date).localeCompare(String(a.date))||String(b.created_at||'').localeCompare(String(a.created_at||'')));
+      renderNews();
       await loadNews();
       document.querySelector('#news-feature')?.closest('section')?.scrollIntoView({behavior:'smooth',block:'start'});
     }catch(err){$('news-editor-error').textContent=err.message||String(err);$('news-composer-status').textContent='';}
@@ -232,8 +239,10 @@ document.addEventListener('DOMContentLoaded',async()=>{
   $('news-cover-remove').addEventListener('click',()=>{coverFile=null;$('news-cover-preview').style.backgroundImage='';$('news-cover-preview').innerHTML='<span>No cover image</span>'});
 
   if(sb){
-    sb.auth.onAuthStateChange(()=>setTimeout(checkAdmin,0));
+    sb.auth.onAuthStateChange(()=>setTimeout(()=>Promise.all([checkAdmin(),loadNews()]),0));
     setInterval(checkAdmin,4000);
   }
+  addEventListener('pageshow',()=>loadNews().catch(console.error));
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')loadNews().catch(console.error)});
   await Promise.all([loadNews(),checkAdmin()]);
 });
