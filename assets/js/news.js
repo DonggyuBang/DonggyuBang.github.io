@@ -8,13 +8,12 @@ document.addEventListener('DOMContentLoaded',async()=>{
   let page=Math.max(1,parseInt(new URLSearchParams(location.search).get('page')||'1',10)||1);
   let admin=false;
   let coverFile=null;
-  let coverUrl='';
   let slugTouched=false;
   let lastRange=null;
 
   const escAttr=v=>BERL.esc(v||'');
-  const slugify=text=>String(text||'').normalize('NFKD').toLowerCase().replace(/[^a-z0-9\s-]/g,'').trim().replace(/\s+/g,'-').replace(/-+/g,'-').slice(0,90);
-  const safeFileName=name=>String(name||'image').toLowerCase().replace(/[^a-z0-9._-]+/g,'-').replace(/-+/g,'-').slice(-90);
+  const slugify=text=>String(text||'').normalize('NFKC').toLowerCase().replace(/[^\p{L}\p{N}\s-]/gu,'').trim().replace(/\s+/g,'-').replace(/-+/g,'-').slice(0,90);
+  const safeFileName=name=>String(name||'image').toLowerCase().replace(/[^a-z0-9._-]+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'').slice(-80)||'image';
   const today=()=>new Date().toISOString().slice(0,10);
 
   function pageNumbers(total,current){
@@ -82,11 +81,11 @@ document.addEventListener('DOMContentLoaded',async()=>{
 
   function autoGrow(el){
     el.style.height='auto';
-    el.style.height=Math.max(el.scrollHeight,el=== $('news-title')?150:92)+'px';
+    el.style.height=Math.max(el.scrollHeight,el===$('news-title')?150:92)+'px';
   }
 
   function resetComposer(){
-    coverFile=null;coverUrl='';slugTouched=false;lastRange=null;
+    coverFile=null;slugTouched=false;lastRange=null;
     $('news-title').value='';$('news-summary').value='';$('news-date').value=today();$('news-category').value='Lab Update';$('news-slug').value='';$('news-body-editor').innerHTML='';$('news-editor-error').textContent='';$('news-composer-status').textContent='';
     $('news-cover-preview').style.backgroundImage='';$('news-cover-preview').innerHTML='<span>No cover image</span>';
     autoGrow($('news-title'));autoGrow($('news-summary'));
@@ -137,34 +136,26 @@ document.addEventListener('DOMContentLoaded',async()=>{
           child.replaceWith(...child.childNodes);
           return;
         }
+        const href=child.tagName==='A'?cleanUrl(child.getAttribute('href')):'';
+        const src=child.tagName==='IMG'?String(child.getAttribute('src')||'').trim():'';
+        const alt=child.tagName==='IMG'?String(child.getAttribute('alt')||''):'';
         [...child.attributes].forEach(a=>child.removeAttribute(a.name));
-        if(child.tagName==='A'){
-          const original=source.querySelector?null:null;
+        if(child.tagName==='A'&&href){child.setAttribute('href',href);child.setAttribute('target','_blank');child.setAttribute('rel','noopener')}
+        if(child.tagName==='IMG'){
+          if(/^https?:\/\//i.test(src)){child.setAttribute('src',src);child.setAttribute('alt',alt)}else child.remove();
         }
       });
     };
     walk(source);
-    const srcNodes=$('news-body-editor').querySelectorAll('a,img');
-    const cleanNodes=source.querySelectorAll('a,img');
-    cleanNodes.forEach((node,i)=>{
-      const src=srcNodes[i];
-      if(node.tagName==='A'){
-        const href=cleanUrl(src?.getAttribute('href'));
-        if(href){node.setAttribute('href',href);node.setAttribute('target','_blank');node.setAttribute('rel','noopener')}else node.removeAttribute('href');
-      }else if(node.tagName==='IMG'){
-        const url=String(src?.getAttribute('src')||'');
-        if(/^https?:\/\//i.test(url)){node.setAttribute('src',url);node.setAttribute('alt',src?.getAttribute('alt')||'')}else node.remove();
-      }
-    });
-    source.querySelectorAll('figcaption').forEach(x=>x.removeAttribute('contenteditable'));
     return source.innerHTML.trim();
   }
 
   async function uploadImage(file,kind='body'){
     if(!file||!sb)throw new Error('Image upload is unavailable.');
     if(file.size>10*1024*1024)throw new Error('Images must be 10 MB or smaller.');
+    if(!/^image\/(jpeg|png|webp|gif)$/i.test(file.type))throw new Error('Please use a JPG, PNG, WEBP, or GIF image.');
     const base=slugify($('news-slug').value||$('news-title').value)||'story';
-    const ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'');
+    const ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
     const path=`news/${base}/${Date.now()}-${kind}-${safeFileName(file.name.replace(/\.[^.]+$/,''))}.${ext}`;
     const {error}=await sb.storage.from('site-images').upload(path,file,{cacheControl:'31536000',upsert:false,contentType:file.type});
     if(error)throw error;
@@ -207,13 +198,13 @@ document.addEventListener('DOMContentLoaded',async()=>{
     if(!title){$('news-editor-error').textContent='Please enter a title.';$('news-title').focus();return;}
     if(!summary){$('news-editor-error').textContent='Please enter a short summary for the news card.';$('news-summary').focus();return;}
     const rich=sanitizeRichHtml();
-    if(!rich&& !$('news-body-editor').innerText.trim()){$('news-editor-error').textContent='Please write the article body.';$('news-body-editor').focus();return;}
+    if(!rich&&!$('news-body-editor').innerText.trim()){$('news-editor-error').textContent='Please write the article body.';$('news-body-editor').focus();return;}
     const publishBtn=$('news-publish');publishBtn.disabled=true;$('news-composer-status').textContent='Publishing…';
     try{
       let slug=slugify($('news-slug').value)||slugify(title);slug=await uniqueSlug(slug);
-      let image=coverUrl;
+      let image='';
       if(coverFile){$('news-composer-status').textContent='Uploading cover…';image=await uploadImage(coverFile,'cover');}
-      const row={slug,date,category,title,summary,image:image||'',body:[{type:'rich',html:rich}],is_published:true,updated_at:new Date().toISOString()};
+      const row={slug,date,category,title,summary,image,body:[{type:'rich',html:rich}],is_published:true,updated_at:new Date().toISOString()};
       const {error}=await sb.from('news').insert(row);
       if(error)throw error;
       $('news-composer-status').textContent='Published';
@@ -237,8 +228,8 @@ document.addEventListener('DOMContentLoaded',async()=>{
   $('news-add-image').addEventListener('mousedown',e=>{e.preventDefault();rememberRange();$('news-inline-image-input').click()});
   $('news-inline-image-input').addEventListener('change',e=>{const file=e.target.files?.[0];e.target.value='';addInlineImage(file)});
   $('news-cover-select').addEventListener('click',()=>$('news-cover-input').click());
-  $('news-cover-input').addEventListener('change',e=>{const file=e.target.files?.[0];e.target.value='';if(!file)return;coverFile=file;coverUrl='';const url=URL.createObjectURL(file);$('news-cover-preview').innerHTML='';$('news-cover-preview').style.backgroundImage=`url("${url}")`});
-  $('news-cover-remove').addEventListener('click',()=>{coverFile=null;coverUrl='';$('news-cover-preview').style.backgroundImage='';$('news-cover-preview').innerHTML='<span>No cover image</span>'});
+  $('news-cover-input').addEventListener('change',e=>{const file=e.target.files?.[0];e.target.value='';if(!file)return;coverFile=file;const url=URL.createObjectURL(file);$('news-cover-preview').innerHTML='';$('news-cover-preview').style.backgroundImage=`url("${url}")`});
+  $('news-cover-remove').addEventListener('click',()=>{coverFile=null;$('news-cover-preview').style.backgroundImage='';$('news-cover-preview').innerHTML='<span>No cover image</span>'});
 
   if(sb){
     sb.auth.onAuthStateChange(()=>setTimeout(checkAdmin,0));
