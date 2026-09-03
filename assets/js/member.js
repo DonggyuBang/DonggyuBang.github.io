@@ -1,16 +1,30 @@
 document.addEventListener('DOMContentLoaded',async()=>{
   const id=new URLSearchParams(location.search).get('id');
-  const [members,pubs,metrics]=await Promise.all([BERL.json('data/members.json'),BERL.json('data/publications.json'),BERL.json('data/metrics.json')]);
-  const m=members.find(x=>x.id===id)||members[0];document.title=`${m.name} | BERL`;
-  document.getElementById('member-profile').innerHTML=`<div class="profile-layout"><div class="profile-photo"><img src="${BERL.esc(m.photo||'assets/images/default-avatar.svg')}" alt="${BERL.esc(m.name)}" onerror="BERL.photo(this)"></div><div class="profile-info"><div class="kicker">${BERL.esc(m.group)}</div><h2>${BERL.esc(m.name)}</h2><div class="role">${BERL.esc(m.position)}</div><p class="profile-bio">${BERL.esc(m.bio||'')}</p><div class="profile-links">${m.email?`<a href="mailto:${BERL.esc(m.email)}">Email</a>`:''}${m.scholar_url?`<a href="${BERL.esc(m.scholar_url)}" target="_blank" rel="noopener">Google Scholar ↗</a>`:''}${m.orcid_url?`<a href="${BERL.esc(m.orcid_url)}" target="_blank" rel="noopener">ORCID ↗</a>`:''}${m.openalex_id?`<a href="https://openalex.org/authors/${BERL.esc(m.openalex_id)}" target="_blank" rel="noopener">OpenAlex ↗</a>`:''}</div><div class="detail-list"><div class="detail-row"><strong>Affiliation</strong><span>${BERL.esc(m.affiliation||'')}</span></div><div class="detail-row"><strong>Department</strong><span>${BERL.esc(m.department||'')}</span></div><div class="detail-row"><strong>Research</strong><span>${BERL.esc((m.research_interests||[]).join(' · '))}</span></div></div></div></div>`;
+  const [members,pubs,memberMetrics]=await Promise.all([
+    BERL.json('data/members.json'),
+    BERL.json('data/publications.json'),
+    BERL.json('data/member-metrics.json').catch(()=>({}))
+  ]);
+  const m=members.find(x=>x.id===id)||members[0];
+  document.title=`${m.name} | BERL`;
+  const targetId=String(m.openalex_id||'').replace('https://openalex.org/authors/','').replace('https://openalex.org/','').replace('authors/','').replace(/^\/+|\/+$/g,'').trim();
+  const openalexUrl=targetId?`https://openalex.org/${BERL.esc(targetId)}`:'';
+
+  document.getElementById('member-profile').innerHTML=`<div class="profile-layout"><div class="profile-photo"><img src="${BERL.esc(m.photo||'assets/images/default-avatar.svg')}" alt="${BERL.esc(m.name)}" onerror="BERL.photo(this)"></div><div class="profile-info"><div class="kicker">${BERL.esc(m.group)}</div><h2>${BERL.esc(m.name)}</h2><div class="role">${BERL.esc(m.position)}</div><p class="profile-bio">${BERL.esc(m.bio||'')}</p><div class="profile-links">${m.email?`<a href="mailto:${BERL.esc(m.email)}">Email</a>`:''}${m.scholar_url?`<a href="${BERL.esc(m.scholar_url)}" target="_blank" rel="noopener">Google Scholar ↗</a>`:''}${m.orcid_url?`<a href="${BERL.esc(m.orcid_url)}" target="_blank" rel="noopener">ORCID ↗</a>`:''}${openalexUrl?`<a href="${openalexUrl}" target="_blank" rel="noopener">OpenAlex ↗</a>`:''}</div><div class="detail-list"><div class="detail-row"><strong>Affiliation</strong><span>${BERL.esc(m.affiliation||'')}</span></div><div class="detail-row"><strong>Department</strong><span>${BERL.esc(m.department||'')}</span></div><div class="detail-row"><strong>Research</strong><span>${BERL.esc((m.research_interests||[]).join(' · '))}</span></div></div></div></div>`;
+
   const metricsEl=document.getElementById('profile-metrics');
-  if(m.featured){metricsEl.innerHTML=[['Publications',metrics.publications],['Citations',metrics.citations],['h-index',metrics.h_index],['i10-index',metrics.i10_index]].map(([l,v])=>`<div class="metric"><div class="metric-value">${BERL.fmt(v)}</div><div class="metric-label">${l}</div></div>`).join('')}else{metricsEl.closest('section')?.classList.add('hidden')}
-  const targetId=String(m.openalex_id||'').replace('https://openalex.org/authors/','').replace('https://openalex.org/','').trim();
-  const tokens=m.name.toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim().split(/\s+/).filter(x=>x.length>1);
-  const mine=pubs.filter(p=>{
-    const byId=targetId&&(p.author_ids||[]).some(a=>String(a).replace('https://openalex.org/','').replace('authors/','')===targetId);
-    if(byId)return true;
-    return (p.authors||[]).some(a=>{const s=a.toLowerCase();return tokens.every(x=>s.includes(x))});
-  }).sort((a,b)=>(b.year||0)-(a.year||0));
-  document.getElementById('member-pubs').innerHTML=mine.length?mine.slice(0,20).map(p=>`<article class="publication"><div class="pub-year">${p.year||''}</div><div><div class="pub-title">${BERL.esc(p.title)}</div><div class="pub-meta">${BERL.esc((p.authors||[]).join(', '))}${p.journal?' · '+BERL.esc(p.journal):''}${p.cited_by_count?` · ${BERL.fmt(p.cited_by_count)} citations`:''}</div></div><div class="pub-links">${p.doi?`<a href="https://doi.org/${BERL.esc(p.doi)}" target="_blank" rel="noopener">DOI ↗</a>`:''}${p.id?`<a href="https://openalex.org/works/${BERL.esc(p.id)}" target="_blank" rel="noopener">OpenAlex ↗</a>`:''}</div></article>`).join(''):`<div class="empty">No linked publications found.</div>`;
+  const mm=memberMetrics[m.id];
+  if(mm){
+    metricsEl.innerHTML=[
+      ['Publications',mm.publications],
+      ['Citations',mm.citations],
+      ['h-index',mm.h_index],
+      ['i10-index',mm.i10_index]
+    ].map(([l,v])=>`<div class="metric"><div class="metric-value">${BERL.fmt(v)}</div><div class="metric-label">${l}</div></div>`).join('');
+  }else{
+    metricsEl.innerHTML='<div class="empty">Scholarly metrics will appear after an OpenAlex Author ID is linked to this profile.</div>';
+  }
+
+  const mine=targetId?pubs.filter(p=>(p.author_ids||[]).some(a=>String(a).replace('https://openalex.org/authors/','').replace('https://openalex.org/','').replace('authors/','').replace(/^\/+|\/+$/g,'').trim()===targetId)).sort((a,b)=>(b.year||0)-(a.year||0)):[];
+  document.getElementById('member-pubs').innerHTML=mine.length?mine.map(p=>`<article class="publication"><div class="pub-year">${p.year||''}</div><div><div class="pub-title">${BERL.esc(p.title)}</div><div class="pub-meta">${BERL.esc((p.authors||[]).join(', '))}${p.journal?' · '+BERL.esc(p.journal):''}${p.cited_by_count?` · ${BERL.fmt(p.cited_by_count)} citations`:''}</div></div><div class="pub-links">${p.doi?`<a href="https://doi.org/${BERL.esc(p.doi)}" target="_blank" rel="noopener">DOI ↗</a>`:''}${p.id?`<a href="https://openalex.org/works/${BERL.esc(p.id)}" target="_blank" rel="noopener">OpenAlex ↗</a>`:''}</div></article>`).join(''):`<div class="empty">${targetId?'No linked publications found for this OpenAlex profile.':'Linked publications will appear after an OpenAlex Author ID is linked to this profile.'}</div>`;
 });
