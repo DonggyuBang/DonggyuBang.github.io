@@ -5,10 +5,10 @@ document.addEventListener('DOMContentLoaded',async()=>{
     ]);
     const detail=n=>`news-detail.html?id=${encodeURIComponent(n.slug)}`;
 
-    document.getElementById('hero-kicker').textContent=cfg.tagline||'Bioenergy · Remediation · AI';
-    document.getElementById('hero-title').innerHTML='Bioenvironmental<br>Engineering<br><em>Research Lab</em>';
-    document.getElementById('hero-desc').textContent='Environmental engineering across bioenergy, remediation, microbial systems, circular materials, and AI.';
-    document.getElementById('hero-stats').innerHTML=[['Bioenergy','Resource recovery'],['Remediation','Water & materials'],['Microbial','Biotechnology'],['AI','Prediction & optimization']].map(([a,b])=>`<span class="hero-stat">${a} · ${b}</span>`).join('');
+    document.getElementById('hero-kicker').textContent=cfg.tagline||'Bioenergy · Environmental Engineering · AI';
+    document.getElementById('hero-title').innerHTML='BIOENERGY &amp;<br>ENVIRONMENTAL ENGINEERING<br><em>RESEARCH LAB</em>';
+    document.getElementById('hero-desc').textContent=cfg.hero_description||'BIOENERGY & ENVIRONMENTAL ENGINEERING RESEARCH LAB at Hanyang University advances bioenergy, environmental engineering, microbial systems, circular materials, remediation, and data-driven research.';
+    document.getElementById('hero-stats').innerHTML=[['Bioenergy','Resource recovery'],['Environmental Engineering','Treatment & remediation'],['Microbial','Biotechnology'],['AI','Prediction & optimization']].map(([a,b])=>`<span class="hero-stat">${a} · ${b}</span>`).join('');
 
     const heroImages=['assets/images/generated/hero-clean-tech.png','assets/images/generated/hero-landscape.png','assets/images/generated/research-bioenergy.png','assets/images/generated/research-remediation.png','assets/images/generated/research-microbial.png','assets/images/generated/research-ai.png'];
     document.getElementById('hero-slides').innerHTML=heroImages.map((src,i)=>`<div class="hero-slide ${i===0?'active':''}" style="background-image:url('${src}')"></div>`).join('');
