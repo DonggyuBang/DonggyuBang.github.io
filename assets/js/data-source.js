@@ -1,18 +1,22 @@
 (()=>{
   let client=null;
 
+  function config(){
+    return window.BERL_SUPABASE||{};
+  }
+
   function hasSupabaseConfig(){
-    const c=window.BERL_SUPABASE||{};
-    return Boolean(c.url&&c.publishableKey&&window.supabase?.createClient);
+    const c=config();
+    return Boolean(c.url&&c.publishableKey);
   }
 
   function getClient(){
-    if(!hasSupabaseConfig())return null;
+    const c=config();
+    if(!c.url||!c.publishableKey||!window.supabase?.createClient)return null;
     if(!client){
-      client=window.supabase.createClient(
-        window.BERL_SUPABASE.url,
-        window.BERL_SUPABASE.publishableKey
-      );
+      client=window.supabase.createClient(c.url,c.publishableKey,{
+        global:{fetch:(url,options={})=>fetch(url,{...options,cache:'no-store'})}
+      });
     }
     return client;
   }
@@ -38,19 +42,22 @@
   }
 
   async function news(){
-    const sb=getClient();
-    if(!sb)return fallbackNews();
+    const c=config();
+    if(!c.url||!c.publishableKey)return fallbackNews();
 
     try{
-      const {data,error}=await sb
-        .from('news')
-        .select('id,slug,date,category,title,summary,image,body,is_published,created_at,updated_at')
-        .eq('is_published',true)
-        .order('date',{ascending:false});
-
-      if(error)throw error;
-      if(!data?.length)return fallbackNews();
-      return data.map(normalizeNewsRow);
+      const url=new URL(`${c.url}/rest/v1/news`);
+      url.searchParams.set('select','id,slug,date,category,title,summary,image,body,is_published,created_at,updated_at');
+      url.searchParams.set('is_published','eq.true');
+      url.searchParams.set('order','date.desc,created_at.desc');
+      const r=await fetch(url.toString(),{
+        method:'GET',
+        headers:{apikey:c.publishableKey,Accept:'application/json'},
+        cache:'no-store'
+      });
+      if(!r.ok)throw new Error(`news: ${r.status}`);
+      const data=await r.json();
+      return (data||[]).map(normalizeNewsRow);
     }catch(err){
       console.warn('Supabase news unavailable; using data/news.json instead.',err);
       return fallbackNews();
