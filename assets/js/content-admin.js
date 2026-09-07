@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
       const row=type==='research'?{
         slug,title,code:$('content-code').value.trim(),tag:$('content-tag').value.trim(),summary:$('content-summary').value.trim(),topics:splitList($('content-list').value),image,sort_order,is_published,updated_at:new Date().toISOString()
       }:{
-        slug,title,status:$('content-status').value.trim()||'Ongoing',period:$('content-period').value.trim(),lead:$('content-lead').value.trim()||'BERL',area:$('content-area').value.trim(),host_institution:$('content-host')?.value.trim()||'',principal_investigator:$('content-pi')?.value.trim()||'',summary:$('content-summary').value.trim(),keywords:splitList($('content-list').value),image,sort_order,is_published,updated_at:new Date().toISOString()
+        slug,title,status:$('content-status').value.trim()||'Ongoing',period:$('content-period').value.trim(),lead:'',area:'',host_institution:$('content-host')?.value.trim()||'',principal_investigator:$('content-pi')?.value.trim()||'',participation_role:$('content-role')?.value.trim()||'',summary:$('content-summary').value.trim(),keywords:splitList($('content-list').value),image,sort_order,is_published,updated_at:new Date().toISOString()
       };
       const {error}=await sb.from(table).insert(row);if(error)throw error;
       location.reload();
