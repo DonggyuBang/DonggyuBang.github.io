@@ -20,7 +20,8 @@ document.addEventListener('DOMContentLoaded',async()=>{
     if(file.size>10*1024*1024)throw new Error('Images must be 10 MB or smaller.');
     if(!/^image\/(jpeg|png|webp|gif)$/i.test(file.type))throw new Error('Use JPG, PNG, WEBP, or GIF.');
     const ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
-    const path=`${table}/${slug}/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]+/g,'-')}.${ext}`;
+    const base=file.name.replace(/\.[^.]+$/,'').replace(/[^a-zA-Z0-9._-]+/g,'-');
+    const path=`${table}/${slug}/${Date.now()}-${base}.${ext}`;
     const {error}=await sb.storage.from('site-images').upload(path,file,{cacheControl:'31536000',upsert:false,contentType:file.type});
     if(error)throw error;
     return sb.storage.from('site-images').getPublicUrl(path).data.publicUrl;
@@ -50,7 +51,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
       const row=type==='research'?{
         slug,title,code:$('content-code').value.trim(),tag:$('content-tag').value.trim(),summary:$('content-summary').value.trim(),topics:splitList($('content-list').value),image,sort_order,is_published,updated_at:new Date().toISOString()
       }:{
-        slug,title,status:$('content-status').value.trim()||'Ongoing',period:$('content-period').value.trim(),lead:$('content-lead').value.trim()||'BERL',area:$('content-area').value.trim(),summary:$('content-summary').value.trim(),keywords:splitList($('content-list').value),image,sort_order,is_published,updated_at:new Date().toISOString()
+        slug,title,status:$('content-status').value.trim()||'Ongoing',period:$('content-period').value.trim(),lead:$('content-lead').value.trim()||'BERL',area:$('content-area').value.trim(),host_institution:$('content-host')?.value.trim()||'',principal_investigator:$('content-pi')?.value.trim()||'',summary:$('content-summary').value.trim(),keywords:splitList($('content-list').value),image,sort_order,is_published,updated_at:new Date().toISOString()
       };
       const {error}=await sb.from(table).insert(row);if(error)throw error;
       location.reload();
