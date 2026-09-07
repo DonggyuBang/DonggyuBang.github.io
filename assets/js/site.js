@@ -345,7 +345,7 @@ const BERL={
       const nav=[
         {label:'About BERL',page:'about',url:'about.html'},
         {label:'Research',page:'research',url:'research.html',items:[
-          ['research.html','Research Areas','Six core research themes'],
+          ['research.html','Research Areas','Core research themes'],
           ['projects.html','Projects','Current BERL research projects']
         ]},
         {label:'People',page:'people',url:'people.html',items:[
