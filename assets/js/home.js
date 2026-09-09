@@ -84,11 +84,12 @@ document.addEventListener('DOMContentLoaded',async()=>{
       const n=latest[ni];
       featured.innerHTML=`<a class="featured-news-card" href="${detail(n)}"><div class="featured-news-image" style="background-image:url('${BERL.esc(n.image||'assets/images/generated/hero-clean-tech.png')}')"></div><div class="featured-news-shade"></div><div class="featured-news-copy"><span class="date">${BERL.esc(n.date)} · ${BERL.esc(n.category||'News')}</span><h4>${BERL.esc(n.title)}</h4><span class="featured-news-read">Read story →</span></div></a>`;
       queue.innerHTML=latest.map((item,i)=>({item,i})).filter(x=>x.i!==ni).map(({item,i})=>`<a class="hero-news-item" data-news-index="${i}" href="${detail(item)}"><span class="hero-news-thumb" style="background-image:url('${BERL.esc(item.image||'assets/images/generated/hero-clean-tech.png')}')"></span><span class="hero-news-row-copy"><span class="date">${BERL.esc(item.date)}</span><strong>${BERL.esc(item.title)}</strong></span><span class="hero-news-arrow">↗</span></a>`).join('');
-      [...queue.querySelectorAll('.hero-news-item')].forEach(row=>row.addEventListener('mouseenter',()=>{
-        ni=Number(row.dataset.newsIndex);
-        renderNews();
-        resetNewsTimer();
-      }));
+      [...queue.querySelectorAll('.hero-news-item')].forEach(row=>{
+        row.addEventListener('mouseenter',()=>clearInterval(nt));
+        row.addEventListener('mouseleave',resetNewsTimer);
+        row.addEventListener('focus',()=>clearInterval(nt));
+        row.addEventListener('blur',resetNewsTimer);
+      });
       document.getElementById('home-news').innerHTML=latest.slice(0,3).map(item=>`<a class="card news-card" href="${detail(item)}"><div class="news-image" style="background-image:url('${BERL.esc(item.image||'assets/images/generated/hero-landscape.png')}')"></div><div class="news-copy"><div class="date">${BERL.esc(item.date)} · ${BERL.esc(item.category||'News')}</div><h3>${BERL.esc(item.title)}</h3><span class="read-more">Read story →</span></div></a>`).join('');
       resetNewsProgress();
     };
