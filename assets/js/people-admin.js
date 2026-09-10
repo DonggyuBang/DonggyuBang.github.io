@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
   const $=id=>document.getElementById(id);
   const slugify=t=>String(t||'').normalize('NFKC').toLowerCase().replace(/[^\p{L}\p{N}\s-]/gu,'').trim().replace(/\s+/g,'-').replace(/-+/g,'-').slice(0,90);
   const split=v=>String(v||'').split(/\n|,/).map(x=>x.trim()).filter(Boolean);
-  const groupOrder=g=>({Advisor:1,'Research Professors':2,'Postdoctoral Researchers':3,'Ph.D. Students':4,'Integrated M.S./Ph.D. Students':5,'M.S. Students':6,Alumni:7}[g]||99);
+  const groupOrder=g=>({Advisor:1,'Research Professors':2,'Postdoctoral Researchers':3,'Ph.D. Students':4,'Integrated M.S./Ph.D. Students':5,'M.S. Students':6,'Administrative Staff':7,Alumni:8}[g]||99);
   let admin=false;
   async function checkAdmin(){admin=false;if(sb){try{const {data:{session}}=await sb.auth.getSession();if(session){const {data,error}=await sb.rpc('is_admin');admin=!error&&data===true}}catch{}}document.querySelectorAll('[data-people-admin]').forEach(el=>el.hidden=!admin);return admin}
   async function upload(file,slug){if(!file)return'';if(file.size>10*1024*1024)throw new Error('Images must be 10 MB or smaller.');if(!/^image\/(jpeg|png|webp|gif)$/i.test(file.type))throw new Error('Use JPG, PNG, WEBP, or GIF.');const ext=(file.name.split('.').pop()||'jpg').replace(/[^a-z0-9]/gi,'').toLowerCase()||'jpg';const path=`people/${slug}/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]+/g,'-')}.${ext}`;const {error}=await sb.storage.from('site-images').upload(path,file,{cacheControl:'31536000',upsert:false,contentType:file.type});if(error)throw error;return sb.storage.from('site-images').getPublicUrl(path).data.publicUrl}
