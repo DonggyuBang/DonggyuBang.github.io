@@ -392,6 +392,7 @@ const BERL={
           ['people.html#phd-students','Ph.D. Students','Doctoral researchers'],
           ['people.html#integrated-ms-phd-students','Integrated M.S./Ph.D. Students','Integrated degree researchers'],
           ['people.html#ms-students','M.S. Students','Master’s researchers'],
+          ['people.html#administrative-staff','Administrative Staff','Laboratory administration'],
           ['people.html#alumni','Alumni','Former BERL members']
         ]},
         {label:'Publications',page:'publications',url:'publications.html'},
