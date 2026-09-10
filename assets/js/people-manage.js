@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
   const $=id=>document.getElementById(id);
   const split=v=>String(v||'').split(/\n|,/).map(x=>x.trim()).filter(Boolean);
   const slugify=t=>String(t||'').normalize('NFKC').toLowerCase().replace(/[^\p{L}\p{N}\s-]/gu,'').trim().replace(/\s+/g,'-').replace(/-+/g,'-').slice(0,90);
-  const groupOrder=g=>({Advisor:1,'Research Professors':2,'Postdoctoral Researchers':3,'Ph.D. Students':4,'Integrated M.S./Ph.D. Students':5,'M.S. Students':6,Alumni:7}[g]||99);
+  const groupOrder=g=>({Advisor:1,'Research Professors':2,'Postdoctoral Researchers':3,'Ph.D. Students':4,'Integrated M.S./Ph.D. Students':5,'M.S. Students':6,'Administrative Staff':7,Alumni:8}[g]||99);
   let rows=[],current=null,filter='all',photoFile=null;
   async function requireAdmin(){if(!sb){location.replace('people.html');return false}try{const {data:{session}}=await sb.auth.getSession();if(!session){location.replace('people.html');return false}const {data,error}=await sb.rpc('is_admin');if(error||data!==true){location.replace('people.html');return false}document.documentElement.classList.add('people-manage-authorized');return true}catch{location.replace('people.html');return false}}
   async function load(){const {data,error}=await sb.from('people_members').select('*').order('group_order').order('sort_order').order('created_at');if(error)throw error;rows=data||[];render()}
