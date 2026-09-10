@@ -1,0 +1,67 @@
+/* Search page readability — desktop and mobile. */
+body[data-page="search"] .search-panel,
+body[data-page="search"] .search-box,
+body[data-page="search"] #search-results,
+body[data-page="search"] .search-result,
+body[data-page="search"] .empty{
+  color:#07161c!important;
+  -webkit-text-fill-color:#07161c!important;
+}
+body[data-page="search"] .search-box h2,
+body[data-page="search"] .search-result h3,
+body[data-page="search"] .search-result h3 a,
+body[data-page="search"] .search-result a{
+  color:#07161c!important;
+  -webkit-text-fill-color:#07161c!important;
+}
+body[data-page="search"] #site-search{
+  width:100%!important;
+  max-width:100%!important;
+  color:#07161c!important;
+  -webkit-text-fill-color:#07161c!important;
+  background:#fff!important;
+  caret-color:#07161c!important;
+  opacity:1!important;
+}
+body[data-page="search"] #site-search::placeholder{
+  color:#59676c!important;
+  -webkit-text-fill-color:#59676c!important;
+  opacity:1!important;
+}
+body[data-page="search"] .search-result{
+  padding:20px 0!important;
+  border-bottom:1px solid rgba(7,22,28,.13)!important;
+}
+body[data-page="search"] .search-result .type{
+  color:#0a827e!important;
+  -webkit-text-fill-color:#0a827e!important;
+  font-size:10px!important;
+  font-weight:900!important;
+  letter-spacing:.12em!important;
+  text-transform:uppercase!important;
+}
+body[data-page="search"] .search-result .small,
+body[data-page="search"] .search-result .muted,
+body[data-page="search"] .search-meta{
+  color:#526267!important;
+  -webkit-text-fill-color:#526267!important;
+  opacity:1!important;
+}
+body[data-page="search"] .search-meta{
+  margin:0 0 12px!important;
+  font-size:12px!important;
+  font-weight:700!important;
+}
+body[data-page="search"] .search-result h3{
+  margin:5px 0 6px!important;
+  font-size:20px!important;
+  line-height:1.25!important;
+}
+body[data-page="search"] .search-result .small{
+  line-height:1.65!important;
+}
+@media(max-width:720px){
+  body[data-page="search"] .search-panel{padding-left:4px!important;padding-right:4px!important}
+  body[data-page="search"] .search-result{padding:17px 0!important}
+  body[data-page="search"] .search-result h3{font-size:18px!important}
+}
