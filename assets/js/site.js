@@ -30,6 +30,15 @@ const BERL={
     });
   },
 
+  loadStyle(src,id){
+    if(id&&document.getElementById(id))return;
+    const l=document.createElement('link');
+    l.rel='stylesheet';
+    l.href=src;
+    if(id)l.id=id;
+    document.head.appendChild(l);
+  },
+
   cmsPath(){
     return location.pathname.endsWith('/')?location.pathname+'index.html':location.pathname;
   },
@@ -307,6 +316,22 @@ const BERL={
         items.forEach(x=>x!==item&&x.classList.remove('open'));
         item.classList.toggle('open');
       }));
+
+      const navLinks=document.getElementById('navLinks');
+      document.querySelectorAll('#navLinks .dropdown a,#navLinks .nav-item:not(.has-dropdown)>.nav-link').forEach(link=>{
+        link.addEventListener('click',()=>{
+          navLinks?.classList.remove('open');
+          document.getElementById('menuBtn')?.setAttribute('aria-expanded','false');
+        });
+      });
+
+      document.addEventListener('keydown',e=>{
+        if(e.key==='Escape'){
+          navLinks?.classList.remove('open');
+          items.forEach(x=>x.classList.remove('open'));
+          document.getElementById('menuBtn')?.setAttribute('aria-expanded','false');
+        }
+      });
     }else{
       items.forEach(item=>{
         let t;
@@ -318,6 +343,17 @@ const BERL={
         item.querySelector('.dropdown')?.addEventListener('mouseleave',close);
       });
     }
+  },
+
+  fixMobileHash(){
+    if(!matchMedia('(max-width:980px)').matches||!location.hash)return;
+    const scrollToHash=()=>{
+      try{
+        const target=document.querySelector(location.hash);
+        if(target)target.scrollIntoView({block:'start'});
+      }catch{}
+    };
+    [80,350,850].forEach(ms=>setTimeout(scrollToHash,ms));
   },
 
   async init(){
@@ -337,6 +373,7 @@ const BERL={
         l.dataset.polish='1';
         document.head.appendChild(l);
       }
+      this.loadStyle('assets/css/mobile.css?v=20260910mobile1','berl-mobile-css');
 
       const cfg=await this.json('data/site.json');
       this.cfg=cfg;
@@ -362,16 +399,21 @@ const BERL={
         {label:'Contact',page:'contact',url:'contact.html'}
       ];
 
-      document.getElementById('site-header').innerHTML=`<header class="site-header"><div class="scroll-progress"><span id="scrollProgressBar"></span></div><div class="navbar"><a class="brand" href="index.html"><img src="assets/images/berl-mark.svg" alt="BERL"><span><span class="brand-name">BERL</span><span class="brand-sub">${this.esc(cfg.lab_name)}</span></span></a><nav class="nav-links" id="navLinks">${nav.map(n=>`<div class="nav-item ${n.items?'has-dropdown':''}"><a class="nav-link ${page===n.page?'active':''}" href="${n.url}">${n.label}${n.items?'<span class="nav-caret">⌄</span>':''}</a>${n.items?`<div class="dropdown">${n.items.map(([u,t,d])=>`<a href="${u}"><strong>${this.esc(t)}</strong><span>${this.esc(d)}</span></a>`).join('')}</div>`:''}</div>`).join('')}</nav><div class="nav-tools"><a class="icon-btn" href="search.html" aria-label="Search">⌕</a><button class="icon-btn menu-btn" id="menuBtn" aria-label="Menu">☰</button></div></div></header>`;
+      document.getElementById('site-header').innerHTML=`<header class="site-header"><div class="scroll-progress"><span id="scrollProgressBar"></span></div><div class="navbar"><a class="brand" href="index.html"><img src="assets/images/berl-mark.svg" alt="BERL"><span><span class="brand-name">BERL</span><span class="brand-sub">${this.esc(cfg.lab_name)}</span></span></a><nav class="nav-links" id="navLinks">${nav.map(n=>`<div class="nav-item ${n.items?'has-dropdown':''}"><a class="nav-link ${page===n.page?'active':''}" href="${n.url}">${n.label}${n.items?'<span class="nav-caret">⌄</span>':''}</a>${n.items?`<div class="dropdown">${n.items.map(([u,t,d])=>`<a href="${u}"><strong>${this.esc(t)}</strong><span>${this.esc(d)}</span></a>`).join('')}</div>`:''}</div>`).join('')}</nav><div class="nav-tools"><a class="icon-btn" href="search.html" aria-label="Search">⌕</a><button class="icon-btn menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false">☰</button></div></div></header>`;
 
       document.getElementById('site-footer').innerHTML=`<footer class="site-footer"><div class="container"><div class="footer-grid"><div><h4>BERL</h4><p>${this.esc(cfg.lab_name)}<br>${this.esc(cfg.department)}<br>${this.esc(cfg.institution)}</p></div><div><h4>Explore</h4><p><a href="about.html">About</a><br><a href="research.html">Research</a><br><a href="people.html">People</a><br><a href="publications.html">Publications</a><br><a href="news.html">News</a></p></div><div><h4>Contact</h4><p><a href="mailto:${this.esc(cfg.contact_email)}">${this.esc(cfg.contact_email)}</a><br>${this.esc(cfg.telephone)}<br>Seoul, Republic of Korea</p></div></div><div class="footer-bottom"><span>© ${new Date().getFullYear()} BERL</span><span>Hanyang University</span></div></div></footer>`;
 
-      document.getElementById('menuBtn').onclick=()=>document.getElementById('navLinks').classList.toggle('open');
+      document.getElementById('menuBtn').onclick=()=>{
+        const navLinks=document.getElementById('navLinks');
+        const isOpen=navLinks.classList.toggle('open');
+        document.getElementById('menuBtn').setAttribute('aria-expanded',String(isOpen));
+      };
       this.initMenu();
       this.initMotion();
 
       await this.syncCms();
       this.initEditorAccess();
+      this.fixMobileHash();
     }finally{
       clearTimeout(failSafe);
       document.documentElement.classList.add('berl-cms-ready');
