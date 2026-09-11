@@ -7,7 +7,7 @@ const BERL={
 
   esc(v=''){
     return String(v).replace(/[&<>"']/g,c=>({
-      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#039;'
     }[c]));
   },
 
@@ -193,6 +193,28 @@ const BERL={
     }
   },
 
+  async authClient(){
+    if(this._authClient)return this._authClient;
+    await this.loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2','berlSupabaseSdk');
+    if(!window.BERL_SUPABASE?.url){
+      await this.loadScript('assets/js/supabase-config.js?v=20260903perf1','berlSupabaseConfig');
+    }
+    const c=window.BERL_SUPABASE||{};
+    if(!c.url||!c.publishableKey)throw new Error('BERL authentication is unavailable.');
+    this._authClient=window.supabase.createClient(c.url,c.publishableKey);
+    return this._authClient;
+  },
+
+  async sessionRole(sb){
+    const {data:{session}}=await sb.auth.getSession();
+    if(!session)return'guest';
+    const adminResult=await sb.rpc('is_admin');
+    if(!adminResult.error&&adminResult.data===true)return'admin';
+    const managerResult=await sb.rpc('can_manage_content');
+    if(!managerResult.error&&managerResult.data===true)return'content';
+    return'none';
+  },
+
   async loadEditor(openLogin=false){
     if(this._editorPromise){
       await this._editorPromise;
@@ -225,6 +247,84 @@ const BERL={
     }
   },
 
+  configureContentAccess(button,sb){
+    button.disabled=false;
+    button.textContent='Manager';
+    button.setAttribute('aria-label','Content manager menu');
+    button.onclick=e=>{
+      e.stopPropagation();
+      document.getElementById('berl-content-menu')?.remove();
+      const rect=button.getBoundingClientRect();
+      const menu=document.createElement('div');
+      menu.id='berl-content-menu';
+      Object.assign(menu.style,{
+        position:'fixed',
+        top:`${Math.min(innerHeight-260,rect.bottom+10)}px`,
+        right:`${Math.max(12,innerWidth-rect.right)}px`,
+        zIndex:'30000',
+        width:'230px',
+        padding:'8px',
+        border:'1px solid rgba(255,255,255,.16)',
+        borderRadius:'14px',
+        background:'#071d2a',
+        boxShadow:'0 18px 50px rgba(0,0,0,.32)'
+      });
+      const itemStyle='display:block;padding:11px 12px;border-radius:9px;color:#fff;text-decoration:none;font:700 12px/1.35 Arial,sans-serif;';
+      menu.innerHTML=`<a href="news.html" style="${itemStyle}">News</a><a href="people.html" style="${itemStyle}">People</a><a href="research.html" style="${itemStyle}">Research Areas</a><a href="projects.html" style="${itemStyle}">Projects</a><div style="height:1px;background:rgba(255,255,255,.12);margin:6px 4px"></div><button id="berl-content-logout" type="button" style="${itemStyle}width:100%;border:0;background:transparent;text-align:left;cursor:pointer;">Log out</button>`;
+      document.body.appendChild(menu);
+      menu.querySelector('#berl-content-logout').onclick=async()=>{await sb.auth.signOut();location.reload()};
+      setTimeout(()=>document.addEventListener('click',ev=>{if(!menu.contains(ev.target)&&ev.target!==button)menu.remove()},{once:true}),0);
+    };
+  },
+
+  async openRoleLogin(button){
+    document.querySelector('.berl-login-screen')?.remove();
+    this.loadStyle('assets/css/inline-editor.css?v=20260903perf1','berl-role-login-css');
+    let sb;
+    try{sb=await this.authClient()}catch(err){console.error(err);return}
+    const d=document.createElement('div');
+    d.className='berl-login-screen';
+    d.innerHTML=`<div class="berl-login-card"><button class="berl-login-close">×</button><div class="berl-login-brand">BERL</div><h2>Sign in</h2><p>Use an approved BERL account. Access is assigned automatically by account role.</p><label>Email<input id="beMail" type="email" autocomplete="username"></label><label>Password<input id="bePass" type="password" autocomplete="current-password"></label><button class="berl-login-submit">Sign in</button><div class="berl-login-msg"></div></div>`;
+    document.body.append(d);
+    d.querySelector('.berl-login-close').onclick=()=>d.remove();
+    const submit=async()=>{
+      const m=d.querySelector('.berl-login-msg');
+      const submitButton=d.querySelector('.berl-login-submit');
+      submitButton.disabled=true;
+      m.textContent='Signing in…';
+      try{
+        const {error}=await sb.auth.signInWithPassword({
+          email:d.querySelector('#beMail').value.trim(),
+          password:d.querySelector('#bePass').value
+        });
+        if(error){m.textContent=error.message;return}
+        const role=await this.sessionRole(sb);
+        if(role==='admin'){
+          d.remove();
+          button.remove();
+          await this.loadEditor(false);
+          return;
+        }
+        if(role==='content'){
+          d.remove();
+          this.configureContentAccess(button,sb);
+          location.reload();
+          return;
+        }
+        await sb.auth.signOut();
+        m.textContent='This account does not have BERL management permissions.';
+      }catch(err){
+        console.error(err);
+        m.textContent=err?.message||'Unable to sign in.';
+      }finally{
+        submitButton.disabled=false;
+      }
+    };
+    d.querySelector('.berl-login-submit').onclick=submit;
+    d.querySelector('#bePass').addEventListener('keydown',e=>{if(e.key==='Enter')submit()});
+    d.querySelector('#beMail').focus();
+  },
+
   initEditorAccess(){
     if(document.body.dataset.noInlineEditor==='true')return;
     const n=document.querySelector('.nav-tools');
@@ -234,7 +334,7 @@ const BERL={
     b.id='berl-editor-loader';
     b.type='button';
     b.textContent='Login';
-    b.setAttribute('aria-label','Website editor login');
+    b.setAttribute('aria-label','BERL management login');
     Object.assign(b.style,{
       border:'1px solid rgba(255,255,255,.18)',
       background:'rgba(6,24,39,.72)',
@@ -244,13 +344,7 @@ const BERL={
       font:'700 12px/1 Arial,sans-serif',
       cursor:'pointer'
     });
-    b.onclick=async()=>{
-      b.disabled=true;
-      b.textContent='Loading…';
-      b.remove();
-      try{await this.loadEditor(true)}
-      catch(err){console.error(err);location.reload()}
-    };
+    b.onclick=()=>this.openRoleLogin(b);
     n.prepend(b);
 
     try{
@@ -258,8 +352,20 @@ const BERL={
       const ref=c.url?new URL(c.url).hostname.split('.')[0]:'';
       const hasSession=ref&&localStorage.getItem(`sb-${ref}-auth-token`);
       if(hasSession){
-        b.remove();
-        const run=()=>this.loadEditor(false).catch(console.error);
+        const run=async()=>{
+          try{
+            const sb=await this.authClient();
+            const role=await this.sessionRole(sb);
+            if(role==='admin'){
+              b.remove();
+              await this.loadEditor(false);
+            }else if(role==='content'){
+              this.configureContentAccess(b,sb);
+            }else if(role==='none'){
+              await sb.auth.signOut();
+            }
+          }catch(err){console.error(err)}
+        };
         if('requestIdleCallback'in window)requestIdleCallback(run,{timeout:1000});
         else setTimeout(run,250);
       }
