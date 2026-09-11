@@ -1,3 +1,6 @@
 body[data-page="home"] .hero-featured-news{position:relative;overflow:hidden}
 body[data-page="home"] .featured-news-slide{position:absolute!important;inset:0!important;display:block!important;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(8px) scale(.992);animation:none!important;transition:opacity .38s ease,transform .38s ease,visibility 0s linear .38s}
 body[data-page="home"] .featured-news-slide.active{opacity:1;visibility:visible;pointer-events:auto;transform:none;transition:opacity .38s ease,transform .38s ease,visibility 0s linear 0s}
+
+/* Homepage Research Areas: preserve the left side of source images and crop overflow from the right. */
+body[data-page="home"] #research-track .carousel-card .media{background-position:left center!important;transform-origin:left center}
