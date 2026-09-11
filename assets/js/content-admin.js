@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
 
   async function checkAdmin(){
     admin=false;
-    if(sb){try{const {data:{session}}=await sb.auth.getSession();if(session){const {data,error}=await sb.rpc('is_admin');admin=!error&&data===true}}catch{}}
+    if(sb){try{const {data:{session}}=await sb.auth.getSession();if(session){const {data,error}=await sb.rpc('can_manage_content');admin=!error&&data===true}}catch{}}
     document.querySelectorAll('[data-admin-content]').forEach(el=>el.hidden=!admin);
     return admin;
   }
