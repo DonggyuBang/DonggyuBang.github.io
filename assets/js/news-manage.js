@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
     try{
       const {data:{session}}=await sb.auth.getSession();
       if(!session){location.replace('news.html');return false;}
-      const {data,error}=await sb.rpc('is_admin');
+      const {data,error}=await sb.rpc('can_manage_content');
       if(error||data!==true){location.replace('news.html');return false;}
       document.documentElement.classList.add('news-manage-authorized');
       return true;
