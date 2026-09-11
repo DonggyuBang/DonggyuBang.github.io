@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
   const slugify=t=>String(t||'').normalize('NFKC').toLowerCase().replace(/[^\p{L}\p{N}\s-]/gu,'').trim().replace(/\s+/g,'-').replace(/-+/g,'-').slice(0,90);
   const splitList=v=>String(v||'').split(',').map(x=>x.trim()).filter(Boolean);
   const joinList=v=>Array.isArray(v)?v.join(', '):'';
-  async function requireAdmin(){if(!sb){location.replace(type==='research'?'research.html':'projects.html');return false}try{const {data:{session}}=await sb.auth.getSession();if(!session)throw 0;const {data,error}=await sb.rpc('is_admin');if(error||data!==true)throw 0;return true}catch{location.replace(type==='research'?'research.html':'projects.html');return false}}
+  async function requireAdmin(){if(!sb){location.replace(type==='research'?'research.html':'projects.html');return false}try{const {data:{session}}=await sb.auth.getSession();if(!session)throw 0;const {data,error}=await sb.rpc('can_manage_content');if(error||data!==true)throw 0;return true}catch{location.replace(type==='research'?'research.html':'projects.html');return false}}
   function status(t){$('content-manage-status').textContent=t||''}
   function imagePreview(url,label='Current image'){
     const box=$('content-image-preview');if(!box)return;
