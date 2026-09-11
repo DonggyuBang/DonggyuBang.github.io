@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
       try{
         const {data:{session}}=await sb.auth.getSession();
         if(session){
-          const {data,error}=await sb.rpc('is_admin');
+          const {data,error}=await sb.rpc('can_manage_content');
           admin=!error&&data===true;
         }
       }catch{}
