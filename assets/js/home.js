@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
       BERL.json('data/site.json'),
       BERL.json('data/metrics.json'),
       BERL.json('data/publications.json'),
-      BERL.json('data/research.json'),
+      BERLContent.rows('research'),
       BERLData.news()
     ]);
 
@@ -62,6 +62,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
     let nt;
     const featured=document.getElementById('hero-featured-news');
     const queue=document.getElementById('hero-news-list');
+    const homeNews=document.getElementById('home-news');
 
     const latestSignature=rows=>rows.map(n=>`${n.id||''}:${n.slug||''}:${n.updated_at||n.created_at||''}`).join('|');
 
@@ -73,93 +74,106 @@ document.addEventListener('DOMContentLoaded',async()=>{
       p.style.animation='featuredNewsProgress 4.6s linear forwards';
     };
 
-    const renderNews=()=>{
+    const buildNews=()=>{
+      clearTimeout(nt);
       if(!latest.length){
-        featured.innerHTML='';
-        queue.innerHTML='';
-        document.getElementById('home-news').innerHTML='';
+        featured.replaceChildren();
+        queue.replaceChildren();
+        homeNews.replaceChildren();
         return;
       }
-      ni=(ni+latest.length)%latest.length;
-      const n=latest[ni];
-      featured.innerHTML=`<a class="featured-news-card" href="${detail(n)}"><div class="featured-news-image" style="background-image:url('${BERL.esc(n.image||'assets/images/generated/hero-clean-tech.png')}')"></div><div class="featured-news-shade"></div><div class="featured-news-copy"><span class="date">${BERL.esc(n.date)} · ${BERL.esc(n.category||'News')}</span><h4>${BERL.esc(n.title)}</h4><span class="featured-news-read">Read story →</span></div></a>`;
-      queue.innerHTML=latest.map((item,i)=>({item,i})).filter(x=>x.i!==ni).map(({item,i})=>`<a class="hero-news-item" data-news-index="${i}" href="${detail(item)}"><span class="hero-news-thumb" style="background-image:url('${BERL.esc(item.image||'assets/images/generated/hero-clean-tech.png')}')"></span><span class="hero-news-row-copy"><span class="date">${BERL.esc(item.date)}</span><strong>${BERL.esc(item.title)}</strong></span><span class="hero-news-arrow">↗</span></a>`).join('');
-      [...queue.querySelectorAll('.hero-news-item')].forEach(row=>{
-        row.addEventListener('mouseenter',()=>clearInterval(nt));
-        row.addEventListener('mouseleave',resetNewsTimer);
-        row.addEventListener('focus',()=>clearInterval(nt));
-        row.addEventListener('blur',resetNewsTimer);
-      });
-      document.getElementById('home-news').innerHTML=latest.slice(0,3).map(item=>`<a class="card news-card" href="${detail(item)}"><div class="news-image" style="background-image:url('${BERL.esc(item.image||'assets/images/generated/hero-landscape.png')}')"></div><div class="news-copy"><div class="date">${BERL.esc(item.date)} · ${BERL.esc(item.category||'News')}</div><h3>${BERL.esc(item.title)}</h3><span class="read-more">Read story →</span></div></a>`).join('');
-      resetNewsProgress();
+
+      ni=Math.min(Math.max(ni,0),latest.length-1);
+      featured.innerHTML=latest.map((n,i)=>`<a class="featured-news-card featured-news-slide ${i===ni?'active':''}" data-featured-index="${i}" href="${detail(n)}"><div class="featured-news-image" style="background-image:url('${BERL.esc(n.image||'assets/images/generated/hero-clean-tech.png')}')"></div><div class="featured-news-shade"></div><div class="featured-news-copy"><span class="date">${BERL.esc(n.date)} · ${BERL.esc(n.category||'News')}</span><h4>${BERL.esc(n.title)}</h4><span class="featured-news-read">Read story →</span></div></a>`).join('');
+
+      homeNews.innerHTML=latest.slice(0,3).map(item=>`<a class="card news-card" href="${detail(item)}"><div class="news-image" style="background-image:url('${BERL.esc(item.image||'assets/images/generated/hero-landscape.png')}')"></div><div class="news-copy"><div class="date">${BERL.esc(item.date)} · ${BERL.esc(item.category||'News')}</div><h3>${BERL.esc(item.title)}</h3><span class="read-more">Read story →</span></div></a>`).join('');
+      showNews(ni,false);
     };
 
-    const setNews=i=>{
+    const renderQueue=()=>{
+      queue.innerHTML=latest.map((item,i)=>({item,i})).filter(x=>x.i!==ni).map(({item,i})=>`<a class="hero-news-item" data-news-index="${i}" href="${detail(item)}"><span class="hero-news-thumb" style="background-image:url('${BERL.esc(item.image||'assets/images/generated/hero-clean-tech.png')}')"></span><span class="hero-news-row-copy"><span class="date">${BERL.esc(item.date)}</span><strong>${BERL.esc(item.title)}</strong></span><span class="hero-news-arrow">↗</span></a>`).join('');
+    };
+
+    const scheduleNews=()=>{
+      clearTimeout(nt);
+      if(latest.length>1){
+        nt=setTimeout(()=>{
+          showNews(ni+1,true);
+          scheduleNews();
+        },4600);
+      }
+    };
+
+    function showNews(i,restartProgress=true){
       if(!latest.length)return;
       ni=(i+latest.length)%latest.length;
-      renderNews();
-    };
+      featured.querySelectorAll('.featured-news-slide').forEach((card,j)=>card.classList.toggle('active',j===ni));
+      renderQueue();
+      if(restartProgress)resetNewsProgress();
+    }
 
-    const resetNewsTimer=()=>{
-      clearInterval(nt);
-      if(latest.length>1)nt=setInterval(()=>setNews(ni+1),4600);
-    };
-
-    const refreshHomepageNews=async(force=false)=>{
+    const refreshHomepageNews=async()=>{
       try{
         const next=sortNews(await BERLData.news()).slice(0,5);
         const sig=latestSignature(next);
-        if(!force&&sig===newsSignature)return;
+        if(sig===newsSignature)return;
         const currentId=latest[ni]?.id;
         latest=next;
         newsSignature=sig;
         const existingIndex=latest.findIndex(x=>x.id===currentId);
         ni=existingIndex>=0?existingIndex:0;
-        renderNews();
-        resetNewsTimer();
+        buildNews();
+        resetNewsProgress();
+        scheduleNews();
       }catch(err){
         console.warn('Homepage news refresh failed.',err);
       }
     };
 
     newsSignature=latestSignature(latest);
-    renderNews();
-    resetNewsTimer();
+    buildNews();
+    resetNewsProgress();
+    scheduleNews();
 
-    addEventListener('pageshow',()=>refreshHomepageNews(true));
+    addEventListener('pageshow',()=>refreshHomepageNews());
     addEventListener('storage',e=>{
-      if(e.key==='berl-news-revision'||e.key==='berl-public-news-v2')refreshHomepageNews(true);
+      if(e.key==='berl-news-revision'||e.key==='berl-public-news-v2')refreshHomepageNews();
     });
-    addEventListener('berl:news-changed',()=>refreshHomepageNews(true));
+    addEventListener('berl:news-changed',()=>refreshHomepageNews());
     document.addEventListener('visibilitychange',()=>{
       if(document.visibilityState==='visible')refreshHomepageNews();
     });
     setInterval(()=>refreshHomepageNews(),30000);
 
-    document.getElementById('research-track').innerHTML=research.map(r=>`<a class="carousel-card" href="research.html#${BERL.esc(r.slug)}"><div class="media" style="background-image:url('${BERL.esc(r.image||'assets/images/generated/hero-clean-tech.png')}')"></div><div class="overlay"><span class="pill">${BERL.esc(r.tag)}</span><h3>${BERL.esc(r.title)}</h3><p>${BERL.esc((r.topics||[]).slice(0,3).join(' · '))}</p></div></a>`).join('');
     const track=document.getElementById('research-track');
     const dots=document.getElementById('research-dots');
-    let page=0;
-    let pv=innerWidth<=720?1:(innerWidth<=1100?2:3);
-    const pages=()=>Math.ceil(research.length/pv);
-    const draw=()=>{
-      dots.innerHTML=Array.from({length:pages()},(_,i)=>`<button class="${i===page?'active':''}" data-i="${i}"></button>`).join('');
-      [...dots.children].forEach(b=>b.onclick=()=>{page=+b.dataset.i;update()});
-    };
-    const update=()=>{
-      pv=innerWidth<=720?1:(innerWidth<=1100?2:3);
-      if(page>=pages())page=0;
-      const first=track.firstElementChild;
-      const w=first?first.getBoundingClientRect().width:0;
-      track.style.transform=`translateX(-${(w+18)*pv*page}px)`;
-      [...dots.children].forEach((b,i)=>b.classList.toggle('active',i===page));
-    };
-    document.getElementById('research-prev').onclick=()=>{page=(page-1+pages())%pages();update()};
-    document.getElementById('research-next').onclick=()=>{page=(page+1)%pages();update()};
-    addEventListener('resize',()=>{page=0;draw();update()});
-    draw();
-    update();
-    setInterval(()=>{page=(page+1)%pages();update()},5000);
+    track.innerHTML=(research||[]).map(r=>`<a class="carousel-card" href="research.html#${BERL.esc(r.slug)}"><div class="media" style="background-image:url('${BERL.esc(r.image||'assets/images/generated/hero-clean-tech.png')}')"></div><div class="overlay"><span class="pill">${BERL.esc(r.tag||'Research')}</span><h3>${BERL.esc(r.title)}</h3><p>${BERL.esc((r.topics||[]).slice(0,3).join(' · '))}</p></div></a>`).join('');
+
+    if((research||[]).length){
+      let page=0;
+      let pv=innerWidth<=720?1:(innerWidth<=1100?2:3);
+      const pages=()=>Math.max(1,Math.ceil(research.length/pv));
+      const draw=()=>{
+        dots.innerHTML=Array.from({length:pages()},(_,i)=>`<button class="${i===page?'active':''}" data-i="${i}" aria-label="Research page ${i+1}"></button>`).join('');
+        [...dots.children].forEach(b=>b.onclick=()=>{page=+b.dataset.i;update()});
+      };
+      const update=()=>{
+        pv=innerWidth<=720?1:(innerWidth<=1100?2:3);
+        if(page>=pages())page=0;
+        const first=track.firstElementChild;
+        const w=first?first.getBoundingClientRect().width:0;
+        track.style.transform=`translateX(-${(w+18)*pv*page}px)`;
+        [...dots.children].forEach((b,i)=>b.classList.toggle('active',i===page));
+      };
+      document.getElementById('research-prev').onclick=()=>{page=(page-1+pages())%pages();update()};
+      document.getElementById('research-next').onclick=()=>{page=(page+1)%pages();update()};
+      addEventListener('resize',()=>{page=0;draw();update()});
+      draw();
+      update();
+      if(pages()>1)setInterval(()=>{page=(page+1)%pages();update()},5000);
+    }else{
+      dots.replaceChildren();
+    }
 
     const metricData=[
       ['Publications',metrics.publications],
