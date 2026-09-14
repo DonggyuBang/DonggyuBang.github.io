@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded',async()=>{
   const members=await BERLPeople.rows();
   const order=['Advisor','Professors','Postdoctoral Researchers','Ph.D. Students','Integrated M.S./Ph.D. Students','M.S. Students','Administrative Staff'];
-  const slug=s=>s.toLowerCase().replace(/\./g,'').replace(/\//g,'-').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  const slug=s=>s==='Professors'?'research-professors':s.toLowerCase().replace(/\./g,'').replace(/\//g,'-').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 
   document.getElementById('people-groups').innerHTML=order.map(g=>{
     const list=members.filter(m=>m.group===g).sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));
