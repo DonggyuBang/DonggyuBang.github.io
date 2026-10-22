@@ -31,7 +31,6 @@ jobs:
           python-version: "3.12"
 
       - name: Synchronize OpenAlex publications
-        continue-on-error: true
         env:
           OPENALEX_API_KEY: ${{ secrets.OPENALEX_API_KEY }}
         run: python scripts/update_publications.py
