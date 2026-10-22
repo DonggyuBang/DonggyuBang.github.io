@@ -116,17 +116,32 @@ def fetch_author_profile(aid):
 
 
 def fetch_works(aid):
-    out=[]; cursor="*"
+    out=[]; cursor="*"; visited=set(); expected=None
     while cursor:
+        if cursor in visited:
+            raise RuntimeError(f"OpenAlex repeated pagination cursor for {aid}")
+        visited.add(cursor)
         payload=request_json("https://api.openalex.org/works",{
             "filter":f"author.id:{aid}",
             "per_page":100,
             "cursor":cursor
         })
-        out.extend(convert_work(w) for w in payload.get("results",[]))
-        cursor=(payload.get("meta") or {}).get("next_cursor")
-        if not cursor: break
-        time.sleep(.18)
+        results=payload.get("results")
+        meta=payload.get("meta") or {}
+        if not isinstance(results,list):
+            raise RuntimeError(f"OpenAlex response missing works list for {aid}")
+        if expected is None:
+            expected=int(meta.get("count") or 0)
+        out.extend(convert_work(w) for w in results)
+        cursor=meta.get("next_cursor")
+        if cursor and not results:
+            raise RuntimeError(f"OpenAlex returned an empty page with next_cursor for {aid}")
+        if cursor: time.sleep(.18)
+    if expected is not None and len(out)!=expected:
+        raise RuntimeError(
+            f"Incomplete OpenAlex works for {aid}: fetched {len(out)} of {expected}. "
+            "Refusing to publish partial data."
+        )
     return out
 
 
@@ -145,10 +160,16 @@ def calc_h(vals):
 
 
 def main():
+    if not API_KEY:
+        raise RuntimeError(
+            "Missing OPENALEX_API_KEY. Add it to GitHub repository "
+            "Settings > Secrets and variables > Actions before running the sync."
+        )
     members=load_members()
     linked_members=[m for m in members if m.get("id") and author_id(m.get("openalex_id"))]
-    if not API_KEY:
-        print("NOTICE: OPENALEX_API_KEY secret is not set. Keyless access is only suitable for limited testing.")
+    if not linked_members:
+        raise RuntimeError("No published members have an OpenAlex ID; refusing to overwrite publication data.")
+    print(f"Found {len(linked_members)} linked authors.")
 
     merged={}
     member_metrics={}
@@ -193,6 +214,8 @@ def main():
         merged[pkey(p)]=p
 
     pubs=sorted(merged.values(),key=lambda p:(p.get("year") or 0,p.get("cited_by_count") or 0),reverse=True)
+    if not pubs:
+        raise RuntimeError("OpenAlex returned no publications; refusing to overwrite existing data with an empty list.")
     (DATA/"publications.json").write_text(json.dumps(pubs,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     (DATA/"member-metrics.json").write_text(json.dumps(member_metrics,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
 
